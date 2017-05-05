@@ -1,7 +1,8 @@
-var gulp = require('gulp');
-var uncss = require('gulp-uncss');
+var gulp = require('gulp')
+var uncss = require('gulp-uncss')
+var shell = require('gulp-shell')
 
-gulp.task('uncss', function() {
+gulp.task('uncss', ['build'], function() {
   return gulp.src([
       'dist/assets/main.css',
     ])
@@ -11,5 +12,7 @@ gulp.task('uncss', function() {
       ],
       ignore: [/code/g, /pre/g, /^.token/]
     }))
-    .pipe(gulp.dest('dist/assets', {overwrite: true}));
-});
+    .pipe(gulp.dest('dist/assets', {overwrite: true}))
+})
+gulp.task('build', shell.task('JEKYLL_ENV=production jekyll build -d dist'))
+gulp.task('deploy', ['uncss'], shell.task('gh-pages -d dist'))
