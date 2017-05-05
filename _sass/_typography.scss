@@ -1,0 +1,5 @@
+$serif-fallback: georgia, times, serif;
+$sans-serif-fallback: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+
+.serif { font-family: 'calluna', $serif-fallback; };
+.sans-serif { font-family: 'sofia-pro', $sans-serif-fallback };

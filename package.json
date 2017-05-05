@@ -1,0 +1,19 @@
+{
+  "name": "prototyping-playbook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattrothenberg/prototyping-playbook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattrothenberg/prototyping-playbook/issues"
+  },
+  "homepage": "https://github.com/mattrothenberg/prototyping-playbook#readme"
+}

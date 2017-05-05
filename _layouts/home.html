@@ -1,0 +1,18 @@
+---
+layout: default
+---
+
+<section class="home">
+  {{ content }}
+  {% for post in site.posts %}
+    <article class="mb4">
+      <header>
+        <h2 class="f3 mt0 mb2 lh-title fw6 red">
+          <a class="link color-inherit hover-red" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
+        </h2>
+        <p class="mid-gray mt0 mb3 fw3">{{ post.date | date: "%-d %B %Y"}}</p>
+      </header>
+      <p class="lh-copy mt0 mb0 serif f4 measure-wide">{{ post.excerpt | remove: '<p>' | remove: '</p>' }}</p>
+  </article>
+  {% endfor %}
+</section>

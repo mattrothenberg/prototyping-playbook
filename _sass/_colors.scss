@@ -1,0 +1,23 @@
+$red: #E35354;
+
+$colors: (
+  'red': $red
+);
+
+@each $name, $color in $colors {
+  .bg-#{$name} {
+    background-color: $color;
+  }
+
+  .b--#{$name} {
+    border-color: $color;
+  }
+
+  .#{$name} {
+    color: $color;
+  }
+
+  .hover-#{$name}:hover {
+    color: $color;
+  }
+}
