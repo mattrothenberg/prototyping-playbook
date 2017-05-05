@@ -32,6 +32,8 @@ gems:
 exclude:
   - Gemfile
   - Gemfile.lock
+  - node_modules
+  - gulpfile.js
 sass:
   style: compressed
 jekyll-press:
