@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulating Asynchronous Events</title>
+  <meta name="description" content="Page refreshes are so 2005. Single page applications (SPA) are the new hotness, and offer a variety of design challenges. One such challenge is letting users...">
+  <script type="text/javascript">
+  !function(e,t,n,a,c,l,m,o,d,f,h,i){c[l]&&(d=e.createElement(t),d[n]=c[l],e[a]("head")[0].appendChild(d),e.documentElement.className+=" wf-cached"),function s(){for(d=e[a](t),f="",h=0;h<d.length;h++)i=d[h][n],i.match(m)&&(f+=i);f&&(c[l]="/**/"+f),setTimeout(s,o+=o)}()}(document,"style","innerHTML","getElementsByTagName",localStorage,"tk",/^@font|^\.tk-/,100);
+</script>
+
+  <script>
+  (function(d) {
+    var config = {
+      kitId: 'pyj3iso',
+      scriptTimeout: 3000,
+      async: false
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/prototyping-playbook/favicon.ico">
+  <link rel="stylesheet" href="/prototyping-playbook/assets/main.css">
+  <link rel="canonical" href="/prototyping-playbook/simulating-async-events">
+  <link rel="alternate" type="application/rss+xml" title="Prototyping Playbook" href="/prototyping-playbook/feed.xml">
+
+  
+</head>
+
+  <body>
+    <nav class="pv3 pt5-l relative">
+  <div class="mw8 center ph3 ph5-l flex justify-between">
+    <a class="link color-inherit hover-red" href="/prototyping-playbook/">
+      <figure class="logo ma0">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M55.3,49.3c17.7,0,32-14.4,32-32v-3.7l4.9,4.9c1.3,1.3,3.7,1.3,5,0c0.7-0.7,1-1.6,1-2.5c0-0.9-0.4-1.8-1-2.5l-11-11  c-1.3-1.3-3.5-1.3-4.9-0.1l-11.8,11c-0.7,0.6-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,0.9,2.5c1.3,1.4,3.6,1.5,5,0.2l6-5.5v4.3  c0,13.8-11.2,25-25,25H43.4C27,42.3,13,55,11.5,71.3l0,0.4l-0.4,0.1c-5.7,1.7-9.6,6.9-9.6,12.8c0,7.4,6,13.4,13.4,13.4  c7.4,0,13.4-6,13.4-13.4c0-5.7-3.7-10.8-9.2-12.7l-0.5-0.2l0.1-0.5c1.5-12.5,12.1-22,24.7-22H55.3z M21.3,84.7  c0,3.5-2.9,6.4-6.4,6.4c-3.5,0-6.4-2.9-6.4-6.4c0-3.5,2.9-6.4,6.4-6.4C18.4,78.3,21.3,81.2,21.3,84.7z"/><path d="M76.6,85.7l-5.7-5.4l5.7-5.4c0.7-0.7,1.1-1.5,1.1-2.5s-0.3-1.8-1-2.5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6  c-1.4-1.3-3.7-1.3-5,0.1c-0.7,0.7-1,1.6-1,2.5c0,0.9,0.4,1.8,1.1,2.5l5.7,5.4L55,85.7c-1.4,1.3-1.5,3.6-0.1,5c1.3,1.4,3.6,1.4,5,0.1  l5.9-5.6l5.9,5.6c1.3,1.3,3.7,1.2,5-0.1C78,89.3,78,87.1,76.6,85.7z"/><path d="M41.9,23.4L36.3,18l5.7-5.4c1.4-1.3,1.5-3.6,0.1-5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6c-1.4-1.3-3.7-1.3-5,0.1  c-1.3,1.4-1.3,3.6,0.1,5L26,18l-5.7,5.4c-0.7,0.7-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,1,2.5c1.3,1.4,3.6,1.4,5,0.1l5.9-5.6l5.9,5.6  c1.3,1.3,3.7,1.2,5-0.1c0.7-0.7,1-1.6,1-2.5C43,24.9,42.6,24.1,41.9,23.4z"/></svg>
+
+      </figure>
+    </a>
+  </div>
+</nav>
+
+    <main class="mw8 center pa3 pa5-l" aria-label="Content">
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="mb5-l" itemprop="name headline">
+    <h2 class="f3 mt0 mb2 lh-title fw6 red">
+      Simulating Asynchronous Events
+    </h2>
+    
+    <p class="mid-gray mt0 mb3 fw3">4 May 2017</p>
+  </header>
+
+  <div class="lh-copy f4 measure-wide center serif" itemprop="articleBody">
+    <p>Page refreshes are <em>so</em> 2005. Single page applications (SPA) are the new hotness, and offer a variety of design challenges. One such challenge is letting users know what’s happening while a request (e.g., a form submission) does it thing. This play will give you the fundamentals needed to prototype such situations.</p>
+
+<h2 id="scenario">Scenario</h2>
+
+<p>Let’s suppose you’re designing a SPA. You want to introduce a pattern where a button that triggers an asynchronous event behind the scenes shows a spinner for the duration of the request.</p>
+
+<div style="width: 100%; height: 0px; position: relative; padding-bottom: 39.697%;"><iframe src="https://streamable.com/s/vggdh/zeqdud" frameborder="0" width="100%" height="100%" allowfullscreen="" style="width: 100%; height: 100%; position: absolute;"></iframe></div>
+
+<h2 id="rundown">Rundown</h2>
+
+<p>The key here is to understand the “states” in which our button will live.</p>
+
+<p>In its <strong>default</strong> state, the button will show the text “Submit Form”. In its <strong>loading</strong> state, the button will hide that text and show a spinner instead.</p>
+
+<p>And so, we can mark up our button accordingly, wrapping the “Submit Form” text in a span tag with the class <code class="highlighter-rouge">label</code>, and the spinner in a span tag with the class <code class="highlighter-rouge">spinner</code>.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;button class=&quot;bg-blue bn white tc h3 fw6 w-100 relative&quot;&gt;
+  &lt;span class=&quot;label&quot;&gt;Submit Form&lt;/span&gt;
+  &lt;span class=&quot;spinner absolute top-1 bottom-1 left-0 right-0&quot;&gt;
+    &lt;!-- fancy SVG spinner goes here  --&gt;
+  &lt;/span&gt;
+&lt;/button&gt;</code></pre>
+</div>
+
+<p>For simplicity’s sake, we can choreograph the hiding of the label / display of the spinner by toggling the class <code class="highlighter-rouge">is-loading</code> on the parent button tag.</p>
+
+<div>
+  <pre data-line=""><code class="language-sass">button .spinner {
+  opacity: 0; // Hide the spinner by default
+  transition: opacity .2s ease-out;
+}
+button .label {
+  display: block; // Show the label by default
+}
+button.is-loading {
+  .label {
+    display: none; // Hide the label when button &#39;is-loading&#39;
+  }
+  .spinner {
+    opacity: 1; // Show the spinner when button &#39;is-loading&#39;
+  }
+}</code></pre>
+</div>
+
+<p>Now, we can use Javascript to trigger this choreography on <code class="highlighter-rouge">click</code> of our button.</p>
+
+<hr />
+
+<h2 id="implementationvanilla-js-es6">Implementation — Vanilla JS (ES6)</h2>
+
+<p>Here’s the game plan:</p>
+
+<ul>
+  <li>Write a function named <code class="highlighter-rouge">showSpinner</code>. The function should do a few things:
+    <ul>
+      <li>Add the <code class="highlighter-rouge">is-loading</code> class to our button — kicking off the choreography described above.</li>
+      <li>Remove the <code class="highlighter-rouge">is-loading</code> class after a duration of two seconds</li>
+      <li>Set the <code class="highlighter-rouge">disabled</code> attribute on our button to true while the <code class="highlighter-rouge">is-loading</code> class is present, to prevent users from repeatedly triggering the sequence.</li>
+    </ul>
+  </li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">function showSpinner() {
+  let button = this
+  let isEnabled = !button.disabled; // Is the button enabled?
+
+  if (isEnabled) { // If so
+    button.disabled = true // Disable the button
+    button.classList.toggle(&#39;is-loading&#39;) // Toggle the class
+
+    setTimeout(() =&gt; { // And do the following after 2 seconds
+      button.classList.toggle(&#39;is-loading&#39;) // Toggle the class
+      button.disabled = false // Enable the button
+    }, 2000)
+  }
+}</code></pre>
+</div>
+
+<ul>
+  <li>Add a <code class="highlighter-rouge">click</code> event listener to our button which calls the showSpinner function.</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">// Thou shalt do my bidding when clicked
+button.addEventListener(&#39;click&#39;, showSpinner)</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="qmmXoN" data-default-tab="html,result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Asynchronous Events - Vanilla JS (ES6)" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/qmmXoN/">Asynchronous Events - Vanilla JS (ES6)</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="implementationvue-js">Implementation — Vue JS</h2>
+
+<p>Here’s the game plan:</p>
+<ul>
+  <li>Construct a Vue instance and add a data property called <code class="highlighter-rouge">loading</code> to represent our button’s loading state</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">new Vue({
+  el: &#39;#app&#39;,
+  data: {
+    loading: false // Button shouldn&#39;t spin by default :)
+  },
+  methods: {
+    // nothing to see here
+  }
+})</code></pre>
+</div>
+
+<ul>
+  <li>Mark up our button, adding the following:
+    <ul>
+      <li>A <code class="highlighter-rouge">@click</code> directive to which we can eventually attach an event listener</li>
+      <li>A <code class="highlighter-rouge">:disabled</code> attribute that we can enable/disable the button as a function of the loading state</li>
+      <li>A <code class="highlighter-rouge">:class</code> directive so that we can dynamically toggle the <code class="highlighter-rouge">is-loading</code> class with respect to our loading state</li>
+    </ul>
+  </li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;button
+  @click=&quot;submitForm&quot;
+  :disabled=&quot;loading&quot;
+  v-bind:class=&quot;{&#39;is-loading&#39;: loading}&quot;
+  class=&quot;bg-blue bn white tc h3 fw6 w-100 relative&quot;&gt;</code></pre>
+</div>
+
+<ul>
+  <li>Implement the <code class="highlighter-rouge">submitForm</code> method and add it to our instance’s methods property. Like in the previous example, this method should add the <code class="highlighter-rouge">is-loading</code> class and remove it after a duration of two seconds</li>
+  <li>Fortunately, and thanks to Vue’s two-way data binding, we no longer have to manually set our button’s <code class="highlighter-rouge">disabled</code> attribute since it’s a function of our instance’s state</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">methods: {
+  submitForm: function() {
+    let self = this;
+    self.loading = true; // set the instance&#39;s loading state to true
+
+    setTimeout(() =&gt; {
+      self.loading = false; // set it to false
+    }, 2000) // After two seconds
+  }
+}</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="zwwpzO" data-default-tab="html,result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Asynchronous Events - Vue JS" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/zwwpzO/">Asynchronous Events - Vue JS</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="implementationreact-js">Implementation — React JS</h2>
+
+<p>Here’s the game plan:</p>
+
+<ul>
+  <li>Scaffold a React component (using the traditional <code class="highlighter-rouge">class</code> syntax) to represent our button</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">class SpinnerButton extends React.Component {
+  constructor () {
+    super ()
+
+    this.state = { // Similar to Vue&#39;s &#39;data&#39; property
+      loading: false
+    }
+  }
+}</code></pre>
+</div>
+
+<ul>
+  <li>Implement our component’s <code class="highlighter-rouge">render</code> method to appease the React gods. Note that we’re only adding the <code class="highlighter-rouge">is-loading</code> class when our state’s <code class="highlighter-rouge">loading</code> attribute is truthy.</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">render () {
+  let buttonClass
+
+  this.state.loading ? // Are you loading?
+    buttonClass = &#39;is-loading&#39; : // If so, add &#39;is-loading&#39; class
+    buttonClass = &#39;&#39;
+
+  return(
+    &lt;button
+      disabled={this.state.loading} // Disable if loading
+      className={&quot;bg-blue bn white tc h3 fw6 w-100 relative &quot; + buttonClass}&gt; // Dynamically add the &#39;is-loading&#39; class
+       {&lt;!-- implementation details --&gt;}
+    &lt;/button&gt;
+  )
+}</code></pre>
+</div>
+
+<ul>
+  <li>Add an <code class="highlighter-rouge">onClick</code> handler to our button, and implement the function it calls</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;button onClick={this.submitForm.bind(this)}&gt;&lt;/button&gt;</code></pre>
+</div>
+
+<div>
+  <pre data-line=""><code class="language-javascript">submitForm () {
+  let self = this
+  self.toggleSpinner()
+
+  setTimeout(() =&gt; {
+    self.toggleSpinner()
+  }, 2000)
+}
+toggleSpinner () {
+  this.setState({
+    loading: !this.state.loading
+  })
+}</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="oWWpGz" data-default-tab="js,result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Asynchronous Events - React JS" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/oWWpGz/">Asynchronous Events - React JS</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+
+  </div>
+  <script src="/prototyping-playbook/assets/prism/prism.js" type="text/javascript"></script>
+</article>
+
+    </main>
+  </body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Working with Tabular Data</title>
+  <meta name="description" content="Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise “[an] easy way to populate your design with meaningful...">
+  <script type="text/javascript">
+  !function(e,t,n,a,c,l,m,o,d,f,h,i){c[l]&&(d=e.createElement(t),d[n]=c[l],e[a]("head")[0].appendChild(d),e.documentElement.className+=" wf-cached"),function s(){for(d=e[a](t),f="",h=0;h<d.length;h++)i=d[h][n],i.match(m)&&(f+=i);f&&(c[l]="/**/"+f),setTimeout(s,o+=o)}()}(document,"style","innerHTML","getElementsByTagName",localStorage,"tk",/^@font|^\.tk-/,100);
+</script>
+
+  <script>
+  (function(d) {
+    var config = {
+      kitId: 'pyj3iso',
+      scriptTimeout: 3000,
+      async: false
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/prototyping-playbook/favicon.ico">
+  <link rel="stylesheet" href="/prototyping-playbook/assets/main.css">
+  <link rel="canonical" href="/prototyping-playbook/working-with-tabular-data">
+  <link rel="alternate" type="application/rss+xml" title="Prototyping Playbook" href="/prototyping-playbook/feed.xml">
+
+  
+</head>
+
+  <body>
+    <nav class="pv3 pt5-l relative">
+  <div class="mw8 center ph3 ph5-l flex justify-between">
+    <a class="link color-inherit hover-red" href="/prototyping-playbook/">
+      <figure class="logo ma0">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M55.3,49.3c17.7,0,32-14.4,32-32v-3.7l4.9,4.9c1.3,1.3,3.7,1.3,5,0c0.7-0.7,1-1.6,1-2.5c0-0.9-0.4-1.8-1-2.5l-11-11  c-1.3-1.3-3.5-1.3-4.9-0.1l-11.8,11c-0.7,0.6-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,0.9,2.5c1.3,1.4,3.6,1.5,5,0.2l6-5.5v4.3  c0,13.8-11.2,25-25,25H43.4C27,42.3,13,55,11.5,71.3l0,0.4l-0.4,0.1c-5.7,1.7-9.6,6.9-9.6,12.8c0,7.4,6,13.4,13.4,13.4  c7.4,0,13.4-6,13.4-13.4c0-5.7-3.7-10.8-9.2-12.7l-0.5-0.2l0.1-0.5c1.5-12.5,12.1-22,24.7-22H55.3z M21.3,84.7  c0,3.5-2.9,6.4-6.4,6.4c-3.5,0-6.4-2.9-6.4-6.4c0-3.5,2.9-6.4,6.4-6.4C18.4,78.3,21.3,81.2,21.3,84.7z"/><path d="M76.6,85.7l-5.7-5.4l5.7-5.4c0.7-0.7,1.1-1.5,1.1-2.5s-0.3-1.8-1-2.5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6  c-1.4-1.3-3.7-1.3-5,0.1c-0.7,0.7-1,1.6-1,2.5c0,0.9,0.4,1.8,1.1,2.5l5.7,5.4L55,85.7c-1.4,1.3-1.5,3.6-0.1,5c1.3,1.4,3.6,1.4,5,0.1  l5.9-5.6l5.9,5.6c1.3,1.3,3.7,1.2,5-0.1C78,89.3,78,87.1,76.6,85.7z"/><path d="M41.9,23.4L36.3,18l5.7-5.4c1.4-1.3,1.5-3.6,0.1-5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6c-1.4-1.3-3.7-1.3-5,0.1  c-1.3,1.4-1.3,3.6,0.1,5L26,18l-5.7,5.4c-0.7,0.7-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,1,2.5c1.3,1.4,3.6,1.4,5,0.1l5.9-5.6l5.9,5.6  c1.3,1.3,3.7,1.2,5-0.1c0.7-0.7,1-1.6,1-2.5C43,24.9,42.6,24.1,41.9,23.4z"/></svg>
+
+      </figure>
+    </a>
+  </div>
+</nav>
+
+    <main class="mw8 center pa3 pa5-l" aria-label="Content">
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="mb5-l" itemprop="name headline">
+    <h2 class="f3 mt0 mb2 lh-title fw6 red">
+      Working with Tabular Data
+    </h2>
+    
+    <p class="mid-gray mt0 mb3 fw3">4 May 2017</p>
+  </header>
+
+  <div class="lh-copy f4 measure-wide center serif" itemprop="articleBody">
+    <p>Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise “[an] easy way to populate your design with meaningful data,” I’m convinced that code is often a better tool for the job. This play will get you up and iterating over data sets with Javascript, like a pro, in ~5 minutes.</p>
+
+<h2 id="scenario">Scenario</h2>
+<p>Let’s suppose you’re designing a dashboard and you need to turn a raw, CSV export of project data into a beautiful table.</p>
+
+<h2 id="mockup">Mockup</h2>
+<p><img src="/prototyping-playbook/assets/img/posts/working-with-data.png" alt="The Final Product" /></p>
+
+<h2 id="rundown">Rundown</h2>
+<p>The key to this play is identifying a schema to represent your data. Luckily, if you have a CSV dump to work with, the schema is likely right before your eyes.</p>
+
+<div>
+  <pre data-line=""><code class="language-md">Name,Budget,Lead
+Uber for Cats,$1,000,000,Jane Smith
+Twitter for Puppies,$10,000,000,John Doe
+Lyft for Fish,$15,000,000,Sally Stevenson</code></pre>
+</div>
+
+<p>Each row of data has a <strong>name</strong>, <strong>budget</strong>, and <strong>lead</strong>. And so, we can represent any given row of our dataset as a Javascript Object, using those descriptors as properties:</p>
+
+<div>
+  <pre data-line=""><code class="language-js">let project = {
+  name: &#39;Uber for Cats&#39;,
+  budget: &#39;$1,000,000&#39;,
+  lead: &#39;Jane Smith&#39;
+}</code></pre>
+</div>
+
+<p>Now, we can collect each individual project object in a Javascript Array:</p>
+
+<div>
+  <pre data-line=""><code class="language-js">let projects = [
+  {
+    name: &#39;Uber for Cats&#39;,
+    budget: &#39;$1,000,000&#39;,
+    lead: &#39;Jane Smith&#39;
+  },
+  {
+    name: &#39;Twitter for Puppies&#39;,
+    budget: &#39;$10,000,000&#39;,
+    lead: &#39;John Doe&#39;
+  },
+  {
+    name: &#39;Lyft for Fish&#39;,
+    budget: &#39;$15,000,000&#39;,
+    lead: &#39;Sally Stevenson&#39;
+  }
+]</code></pre>
+</div>
+
+<p>We’re done with the hard part. Let’s see how to get this list of projects onto the page.</p>
+
+<hr />
+
+<h2 id="implementationvanilla-js-es6">Implementation — Vanilla JS (ES6)</h2>
+
+<p>Here’s the game plan:</p>
+<ul>
+  <li>Iterate over our Array of projects using <code class="highlighter-rouge">forEach</code><sup id="fnref:foreach"><a href="#fn:foreach" class="footnote">1</a></sup></li>
+  <li>For each project, build a template literal that represents a table row, interpolating the <strong>name</strong>, <strong>budget</strong>, and <strong>lead</strong></li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">let tableRow = `
+&lt;tr&gt;
+  &lt;td class=&quot;pa3 bb b--black-10&quot;&gt;
+    ${project.name}
+  &lt;/td&gt;
+  &lt;td class=&quot;pa3 bb b--black-10&quot;&gt;
+    ${project.budget}
+  &lt;/td&gt;
+  &lt;td class=&quot;pa3 bb b--black-10&quot;&gt;
+    ${project.lead}
+  &lt;/td&gt;
+&lt;/tr&gt;
+`</code></pre>
+</div>
+
+<ul>
+  <li>Insert the newly created table row into the DOM using <code class="highlighter-rouge">insertAdjacentHTML</code><sup id="fnref:insertadjacent"><a href="#fn:insertadjacent" class="footnote">2</a></sup></li>
+</ul>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="mmmmYY" data-default-tab="html,result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Table - Vanilla JS (ES6)" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/mmmmYY/">Table - Vanilla JS (ES6)</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="implementation---vue-js">Implementation - Vue JS</h2>
+
+<p>Here’s the game plan:</p>
+
+<ul>
+  <li>Construct a Vue instance, passing our array of projects to its data attribute</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">new Vue({
+  el: &#39;#app&#39;,
+  data: {
+    projects: [
+      {
+        name: &#39;Uber for Cats&#39;,
+        budget: &#39;$1,000,000&#39;,
+        lead: &#39;Jane Smith&#39;
+      },
+      // etcetera
+    ]
+  }
+})</code></pre>
+</div>
+
+<ul>
+  <li>Leverage the <code class="highlighter-rouge">v-for</code> syntax in our HTML to iterate over our array of projects and display each one</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-html">&lt;tr v-for=&quot;project in projects&quot;&gt;
+  &lt;td class=&quot;pa3 bb b--black-10&quot;&gt;{{ project.name }}&lt;/td&gt;
+  &lt;td class=&quot;pa3 bb b--black-10&quot;&gt;{{ project.budget }}&lt;/td&gt;
+  &lt;td class=&quot;pa3 bb b--black-10&quot;&gt;{{ project.lead }}&lt;/td&gt;
+&lt;/tr&gt;</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="RVVgrX" data-default-tab="html,result" data-user="mattrothenberg" data-embed-version="2" data-preview="true" data-pen-title="Table - Vue.js" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/RVVgrX/">Table - Vue.js</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="implementationreact-js">Implementation — React JS</h2>
+
+<p>Here’s the game plan</p>
+
+<ul>
+  <li>Make a stateless functional component called <code class="highlighter-rouge">&lt;ProjectsTable&gt;</code> . This component should accept a list of projects as a property.</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">const ProjectsTable = ({projects}) =&gt; (
+  // nothing to see here
+)</code></pre>
+</div>
+
+<ul>
+  <li>Map over the list of projects and return a table row for each, interpolating the name, budget, and lead.</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-javascript">&lt;tbody&gt;
+  {
+    projects.map((project) =&gt; {
+      return(
+        &lt;tr&gt;
+          &lt;td className=&quot;pa3 bb b--black-10&quot;&gt;{ project.name }&lt;/td&gt;
+          &lt;td className=&quot;pa3 bb b--black-10&quot;&gt;{ project.budget }&lt;/td&gt;
+          &lt;td className=&quot;pa3 bb b--black-10&quot;&gt;{ project.lead }&lt;/td&gt;
+        &lt;/tr&gt;
+      )
+    })
+  }
+&lt;/tbody&gt;</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="wddeWG" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Table - React JS" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/wddeWG/">Table - React JS</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="footnotes">Footnotes</h2>
+<div class="footnotes">
+  <ol>
+    <li id="fn:foreach">
+      <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach?v=example" target="_blank"><code class="highlighter-rouge">forEach</code> on MDN</a>&nbsp;<a href="#fnref:foreach" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:insertadjacent">
+      <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML" target="_blank"><code class="highlighter-rouge">insertAdjacentHTML</code> on MDN</a>&nbsp;<a href="#fnref:insertadjacent" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+  <script src="/prototyping-playbook/assets/prism/prism.js" type="text/javascript"></script>
+</article>
+
+    </main>
+  </body>
+</html>

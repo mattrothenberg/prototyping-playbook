@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-04T21:40:11-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">Working with Tabular Data</title><link href="/prototyping-playbook/working-with-tabular-data" rel="alternate" type="text/html" title="Working with Tabular Data" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/working-with-data</id><content type="html" xml:base="/prototyping-playbook/working-with-tabular-data">&lt;p&gt;Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise “[an] easy way to populate your design with meaningful data,” I’m convinced that code is often a better tool for the job. This play will get you up and iterating over data sets with Javascript, like a pro, in ~5 minutes.&lt;/p&gt;
+
+&lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
+&lt;p&gt;Let’s suppose you’re designing a dashboard and you need to turn a raw, CSV export of project data into a beautiful table.&lt;/p&gt;
+
+&lt;h2 id=&quot;mockup&quot;&gt;Mockup&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/prototyping-playbook/assets/img/posts/working-with-data.png&quot; alt=&quot;The Final Product&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;rundown&quot;&gt;Rundown&lt;/h2&gt;
+&lt;p&gt;The key to this play is identifying a schema to represent your data. Luckily, if you have a CSV dump to work with, the schema is likely right before your eyes.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-md&quot;&gt;Name,Budget,Lead
+Uber for Cats,$1,000,000,Jane Smith
+Twitter for Puppies,$10,000,000,John Doe
+Lyft for Fish,$15,000,000,Sally Stevenson&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Each row of data has a &lt;strong&gt;name&lt;/strong&gt;, &lt;strong&gt;budget&lt;/strong&gt;, and &lt;strong&gt;lead&lt;/strong&gt;. And so, we can represent any given row of our dataset as a Javascript Object, using those descriptors as properties:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let project = {
+  name: &amp;#39;Uber for Cats&amp;#39;,
+  budget: &amp;#39;$1,000,000&amp;#39;,
+  lead: &amp;#39;Jane Smith&amp;#39;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, we can collect each individual project object in a Javascript Array:&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let projects = [
+  {
+    name: &amp;#39;Uber for Cats&amp;#39;,
+    budget: &amp;#39;$1,000,000&amp;#39;,
+    lead: &amp;#39;Jane Smith&amp;#39;
+  },
+  {
+    name: &amp;#39;Twitter for Puppies&amp;#39;,
+    budget: &amp;#39;$10,000,000&amp;#39;,
+    lead: &amp;#39;John Doe&amp;#39;
+  },
+  {
+    name: &amp;#39;Lyft for Fish&amp;#39;,
+    budget: &amp;#39;$15,000,000&amp;#39;,
+    lead: &amp;#39;Sally Stevenson&amp;#39;
+  }
+]&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We’re done with the hard part. Let’s see how to get this list of projects onto the page.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;implementationvanilla-js-es6&quot;&gt;Implementation — Vanilla JS (ES6)&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Iterate over our Array of projects using &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt;&lt;sup id=&quot;fnref:foreach&quot;&gt;&lt;a href=&quot;#fn:foreach&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+  &lt;li&gt;For each project, build a template literal that represents a table row, interpolating the &lt;strong&gt;name&lt;/strong&gt;, &lt;strong&gt;budget&lt;/strong&gt;, and &lt;strong&gt;lead&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;let tableRow = `
+&amp;lt;tr&amp;gt;
+  &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+    ${project.name}
+  &amp;lt;/td&amp;gt;
+  &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+    ${project.budget}
+  &amp;lt;/td&amp;gt;
+  &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+    ${project.lead}
+  &amp;lt;/td&amp;gt;
+&amp;lt;/tr&amp;gt;
+`&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Insert the newly created table row into the DOM using &lt;code class=&quot;highlighter-rouge&quot;&gt;insertAdjacentHTML&lt;/code&gt;&lt;sup id=&quot;fnref:insertadjacent&quot;&gt;&lt;a href=&quot;#fn:insertadjacent&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;mmmmYY&quot; data-default-tab=&quot;html,result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Table - Vanilla JS (ES6)&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/mmmmYY/&quot;&gt;Table - Vanilla JS (ES6)&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementation---vue-js&quot;&gt;Implementation - Vue JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Construct a Vue instance, passing our array of projects to its data attribute&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;new Vue({
+  el: &amp;#39;#app&amp;#39;,
+  data: {
+    projects: [
+      {
+        name: &amp;#39;Uber for Cats&amp;#39;,
+        budget: &amp;#39;$1,000,000&amp;#39;,
+        lead: &amp;#39;Jane Smith&amp;#39;
+      },
+      // etcetera
+    ]
+  }
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Leverage the &lt;code class=&quot;highlighter-rouge&quot;&gt;v-for&lt;/code&gt; syntax in our HTML to iterate over our array of projects and display each one&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;tr v-for=&amp;quot;project in projects&amp;quot;&amp;gt;
+  &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;{{ project.name }}&amp;lt;/td&amp;gt;
+  &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;{{ project.budget }}&amp;lt;/td&amp;gt;
+  &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;{{ project.lead }}&amp;lt;/td&amp;gt;
+&amp;lt;/tr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;RVVgrX&quot; data-default-tab=&quot;html,result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-preview=&quot;true&quot; data-pen-title=&quot;Table - Vue.js&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/RVVgrX/&quot;&gt;Table - Vue.js&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationreact-js&quot;&gt;Implementation — React JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Make a stateless functional component called &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;ProjectsTable&amp;gt;&lt;/code&gt; . This component should accept a list of projects as a property.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;const ProjectsTable = ({projects}) =&amp;gt; (
+  // nothing to see here
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Map over the list of projects and return a table row for each, interpolating the name, budget, and lead.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;&amp;lt;tbody&amp;gt;
+  {
+    projects.map((project) =&amp;gt; {
+      return(
+        &amp;lt;tr&amp;gt;
+          &amp;lt;td className=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;{ project.name }&amp;lt;/td&amp;gt;
+          &amp;lt;td className=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;{ project.budget }&amp;lt;/td&amp;gt;
+          &amp;lt;td className=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;{ project.lead }&amp;lt;/td&amp;gt;
+        &amp;lt;/tr&amp;gt;
+      )
+    })
+  }
+&amp;lt;/tbody&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;wddeWG&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Table - React JS&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/wddeWG/&quot;&gt;Table - React JS&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h2&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:foreach&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach?v=example&quot; target=&quot;_blank&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt; on MDN&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:foreach&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:insertadjacent&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML&quot; target=&quot;_blank&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;insertAdjacentHTML&lt;/code&gt; on MDN&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:insertadjacent&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise “[an] easy way to populate your design with meaningful data,” I’m convinced that code is often a better tool for the job. This play will get you up and iterating over data sets with Javascript, like a pro, in ~5 minutes.</summary></entry><entry><title type="html">Componentization</title><link href="/prototyping-playbook/componentization" rel="alternate" type="text/html" title="Componentization" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/componentization</id><content type="html" xml:base="/prototyping-playbook/componentization">&lt;p&gt;In programs like Sketch, we keep things DRY (“don’t repeat yourself”) by turning our design decisions into “symbols.” It’s no different in front-end land, so this play will introduce you to a few different ways of encapsulating your designs as “components.”&lt;/p&gt;
+
+&lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
+&lt;p&gt;Let’s suppose you’re designing an activity feed for a social networking application. You’ve designed a “card” in Sketch that represents a single item in the feed, but you want to verify that your design works at scale, given a sample set of data.&lt;/p&gt;
+
+&lt;h2 id=&quot;rundown&quot;&gt;Rundown&lt;/h2&gt;
+&lt;p&gt;You’ve figured out that the following chunk of markup produces a single, beautiful, “card.”&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;div class=&amp;quot;bg-white ba b--black-10 pa3&amp;quot;&amp;gt;
+  &amp;lt;div class=&amp;quot;flex&amp;quot;&amp;gt;
+    &amp;lt;img class=&amp;quot;mr2&amp;quot; src=&amp;quot;...&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt;
+    &amp;lt;div&amp;gt;
+      &amp;lt;h1 class=&amp;quot;f6 mv0 blue&amp;quot;&amp;gt;Paul Smith&amp;lt;/h1&amp;gt;
+      &amp;lt;ul class=&amp;quot;mb0 mt1 pl0 list f6&amp;quot;&amp;gt;
+        &amp;lt;li class=&amp;quot;dib black-50&amp;quot;&amp;gt;3 mins&amp;lt;/li&amp;gt;
+      &amp;lt;/ul&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+  &amp;lt;p class=&amp;quot;f3 fw3 mt3 mb0&amp;quot;&amp;gt;
+    What a time to be alive! So many front-end resources,
+    so little time...
+  &amp;lt;/p&amp;gt;
+&amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;mockup&quot;&gt;Mockup&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/prototyping-playbook/assets/img/posts/component-card.png&quot; alt=&quot;The Final Product&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Having read the play on tabular data, you’ve also identified a schema to represent your activity feed.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let posts = [
+  {
+    name: &amp;quot;Paul Smith&amp;quot;,
+    timeago: &amp;quot;3 mins&amp;quot;,
+    avatar: &amp;quot;http://placehold.it/50x50&amp;quot;,
+    status: &amp;quot;What a time to be alive! So many front-end resources...&amp;quot;
+  },
+  {
+    name: &amp;quot;Jane Doe&amp;quot;,
+    timeago: &amp;quot;1 hour&amp;quot;,
+    avatar: &amp;quot;http://placehold.it/50x50&amp;quot;,
+    status: &amp;quot;Does anyone actually use Facebook stories?&amp;quot;
+  },
+  {
+    name: &amp;quot;Alex Jackson&amp;quot;,
+    timeago: &amp;quot;2 hours&amp;quot;,
+    avatar: &amp;quot;http://placehold.it/50x50&amp;quot;,
+    status: &amp;quot;Best slice of pizza in NYC? Go.&amp;quot;
+  }
+];&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;With our schema in place, let’s get to the implementations.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;implementationvanilla-js-es6&quot;&gt;Implementation — Vanilla JS (ES6)&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Write a function that takes a post object and returns a chunk of markup with the &lt;strong&gt;name&lt;/strong&gt;, &lt;strong&gt;timeago&lt;/strong&gt;, &lt;strong&gt;avatar&lt;/strong&gt;, and &lt;strong&gt;status&lt;/strong&gt; properties interpolated accordingly.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;function post_markup(post) {
+  return `
+  &amp;lt;div class=&amp;quot;bg-white ba b--black-10 pa3 mb3&amp;quot;&amp;gt;
+    &amp;lt;div class=&amp;quot;flex&amp;quot;&amp;gt;
+      &amp;lt;img class=&amp;quot;mr2&amp;quot; src=&amp;quot;${post.avatar}&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt;
+      &amp;lt;div&amp;gt;
+        &amp;lt;h1 class=&amp;quot;f6 mv0 blue&amp;quot;&amp;gt;${post.name}&amp;lt;/h1&amp;gt;
+        &amp;lt;ul class=&amp;quot;mb0 mt1 pl0 list f6&amp;quot;&amp;gt;
+          &amp;lt;li class=&amp;quot;dib black-50&amp;quot;&amp;gt;${post.timeago}&amp;lt;/li&amp;gt;
+        &amp;lt;/ul&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+    &amp;lt;p class=&amp;quot;f3 fw3 mv3&amp;quot;&amp;gt;${post.status}&amp;lt;/p&amp;gt;
+  &amp;lt;/div&amp;gt;
+`
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Iterate over the array of posts using &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt;&lt;sup id=&quot;fnref:foreach&quot;&gt;&lt;a href=&quot;#fn:foreach&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+  &lt;li&gt;For each post, call the &lt;code class=&quot;highlighter-rouge&quot;&gt;post_markup&lt;/code&gt; function and insert the return value into the DOM&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;posts.forEach(post =&amp;gt; {
+  let postElement = post_markup(post)
+  stage.insertAdjacentHTML(&amp;quot;beforeend&amp;quot;, postElement);
+});&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;JNWoZN&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Componentization - Vanilla JS (ES6)&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/JNWoZN/&quot;&gt;Componentization - Vanilla JS (ES6)&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationvue-js&quot;&gt;Implementation — Vue JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Construct a Vue instance, passing our array of posts to its &lt;code class=&quot;highlighter-rouge&quot;&gt;data&lt;/code&gt; attribute&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;new Vue({
+  el: &amp;quot;#app&amp;quot;, // DOM element that wraps our list
+  data: {
+    posts: posts // our posts array from earlier
+  }
+});&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Define a Post component that takes a &lt;code class=&quot;highlighter-rouge&quot;&gt;post&lt;/code&gt; object as its sole property and renders our post markup accordingly&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;Vue.component(&amp;quot;Post&amp;quot;, { // so we can access it in our markup
+  props: [&amp;quot;post&amp;quot;], // each post component gets a post :)
+  template: `
+    &amp;lt;div class=&amp;quot;bg-white ba b--black-10 pa3 mb3&amp;quot;&amp;gt;
+      &amp;lt;div class=&amp;quot;flex&amp;quot;&amp;gt;
+        &amp;lt;img class=&amp;quot;mr2&amp;quot; :src=&amp;quot;post.avatar&amp;quot; alt=&amp;quot;&amp;quot; /&amp;gt;
+        &amp;lt;div&amp;gt;
+          &amp;lt;h1 class=&amp;quot;f6 mv0 blue&amp;quot;&amp;gt;&amp;lt;/h1&amp;gt;
+          &amp;lt;ul class=&amp;quot;mb0 mt1 pl0 list f6&amp;quot;&amp;gt;
+            &amp;lt;li class=&amp;quot;dib black-50&amp;quot;&amp;gt;&amp;lt;/li&amp;gt;
+          &amp;lt;/ul&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+      &amp;lt;p class=&amp;quot;f3 fw3 mv3&amp;quot;&amp;gt;
+        
+      &amp;lt;/p&amp;gt;
+    &amp;lt;/div&amp;gt;
+  ` // please render this template
+});&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Post/&amp;gt;&lt;/code&gt; component to our HTML, and use the &lt;code class=&quot;highlighter-rouge&quot;&gt;v-for&lt;/code&gt; directive to iterate over our global array of posts&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;Post v-for=&amp;quot;post in posts&amp;quot; :post=&amp;quot;post&amp;quot;&amp;gt;&amp;lt;/Post&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;zwZGxz&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Componentization - Vue JS&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/zwZGxz/&quot;&gt;Componentization - Vue JS&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationreact-js&quot;&gt;Implementation — React JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Make a stateless functional component called &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Post&amp;gt;&lt;/code&gt; that accepts one post as a property&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;const Post = ({post}) =&amp;gt; {
+  return(
+    &amp;lt;div className=&amp;quot;bg-white ba b--black-10 pa3 mb3&amp;quot;&amp;gt;
+      &amp;lt;div className=&amp;quot;flex&amp;quot;&amp;gt;
+        &amp;lt;img className=&amp;quot;mr2&amp;quot; src={post.avatar} alt=&amp;quot;&amp;quot; /&amp;gt;
+        &amp;lt;div&amp;gt;
+          &amp;lt;h1 className=&amp;quot;f6 mv0 blue&amp;quot;&amp;gt;{post.name}&amp;lt;/h1&amp;gt;
+          &amp;lt;ul className=&amp;quot;mb0 mt1 pl0 list f6&amp;quot;&amp;gt;
+            &amp;lt;li className=&amp;quot;dib black-50&amp;quot;&amp;gt;{post.timeago}&amp;lt;/li&amp;gt;
+          &amp;lt;/ul&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+      &amp;lt;p className=&amp;quot;f3 fw3 mv3&amp;quot;&amp;gt;
+        { post.status }
+      &amp;lt;/p&amp;gt;
+    &amp;lt;/div&amp;gt;
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Make another stateless functional component called &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;PostList&amp;gt;&lt;/code&gt; that accepts an &lt;em&gt;array&lt;/em&gt; of posts as a property and maps over it, returning individual &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;Post&amp;gt;&lt;/code&gt; components accordingly&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;const PostList = ({posts}) =&amp;gt; {
+  return(
+    &amp;lt;div&amp;gt;
+      {
+        posts.map((post) =&amp;gt; {
+          return &amp;lt;Post post={post}/&amp;gt;
+        })
+      }
+    &amp;lt;/div&amp;gt;
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;PmpwrV&quot; data-default-tab=&quot;js,result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-preview=&quot;true&quot; data-pen-title=&quot;Componentization - React JS&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/PmpwrV/&quot;&gt;Componentization - React JS&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h2&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:foreach&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach?v=example&quot; target=&quot;_blank&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt; on MDN&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:foreach&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">In programs like Sketch, we keep things DRY (“don’t repeat yourself”) by turning our design decisions into “symbols.” It’s no different in front-end land, so this play will introduce you to a few different ways of encapsulating your designs as “components.”</summary></entry><entry><title type="html">Simulating Asynchronous Events</title><link href="/prototyping-playbook/simulating-async-events" rel="alternate" type="text/html" title="Simulating Asynchronous Events" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/async-events</id><content type="html" xml:base="/prototyping-playbook/simulating-async-events">&lt;p&gt;Page refreshes are &lt;em&gt;so&lt;/em&gt; 2005. Single page applications (SPA) are the new hotness, and offer a variety of design challenges. One such challenge is letting users know what’s happening while a request (e.g., a form submission) does it thing. This play will give you the fundamentals needed to prototype such situations.&lt;/p&gt;
+
+&lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
+
+&lt;p&gt;Let’s suppose you’re designing a SPA. You want to introduce a pattern where a button that triggers an asynchronous event behind the scenes shows a spinner for the duration of the request.&lt;/p&gt;
+
+&lt;div style=&quot;width: 100%; height: 0px; position: relative; padding-bottom: 39.697%;&quot;&gt;&lt;iframe src=&quot;https://streamable.com/s/vggdh/zeqdud&quot; frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;100%&quot; allowfullscreen=&quot;&quot; style=&quot;width: 100%; height: 100%; position: absolute;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rundown&quot;&gt;Rundown&lt;/h2&gt;
+
+&lt;p&gt;The key here is to understand the “states” in which our button will live.&lt;/p&gt;
+
+&lt;p&gt;In its &lt;strong&gt;default&lt;/strong&gt; state, the button will show the text “Submit Form”. In its &lt;strong&gt;loading&lt;/strong&gt; state, the button will hide that text and show a spinner instead.&lt;/p&gt;
+
+&lt;p&gt;And so, we can mark up our button accordingly, wrapping the “Submit Form” text in a span tag with the class &lt;code class=&quot;highlighter-rouge&quot;&gt;label&lt;/code&gt;, and the spinner in a span tag with the class &lt;code class=&quot;highlighter-rouge&quot;&gt;spinner&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;button class=&amp;quot;bg-blue bn white tc h3 fw6 w-100 relative&amp;quot;&amp;gt;
+  &amp;lt;span class=&amp;quot;label&amp;quot;&amp;gt;Submit Form&amp;lt;/span&amp;gt;
+  &amp;lt;span class=&amp;quot;spinner absolute top-1 bottom-1 left-0 right-0&amp;quot;&amp;gt;
+    &amp;lt;!-- fancy SVG spinner goes here  --&amp;gt;
+  &amp;lt;/span&amp;gt;
+&amp;lt;/button&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;For simplicity’s sake, we can choreograph the hiding of the label / display of the spinner by toggling the class &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; on the parent button tag.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-sass&quot;&gt;button .spinner {
+  opacity: 0; // Hide the spinner by default
+  transition: opacity .2s ease-out;
+}
+button .label {
+  display: block; // Show the label by default
+}
+button.is-loading {
+  .label {
+    display: none; // Hide the label when button &amp;#39;is-loading&amp;#39;
+  }
+  .spinner {
+    opacity: 1; // Show the spinner when button &amp;#39;is-loading&amp;#39;
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, we can use Javascript to trigger this choreography on &lt;code class=&quot;highlighter-rouge&quot;&gt;click&lt;/code&gt; of our button.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;implementationvanilla-js-es6&quot;&gt;Implementation — Vanilla JS (ES6)&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Write a function named &lt;code class=&quot;highlighter-rouge&quot;&gt;showSpinner&lt;/code&gt;. The function should do a few things:
+    &lt;ul&gt;
+      &lt;li&gt;Add the &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; class to our button — kicking off the choreography described above.&lt;/li&gt;
+      &lt;li&gt;Remove the &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; class after a duration of two seconds&lt;/li&gt;
+      &lt;li&gt;Set the &lt;code class=&quot;highlighter-rouge&quot;&gt;disabled&lt;/code&gt; attribute on our button to true while the &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; class is present, to prevent users from repeatedly triggering the sequence.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;function showSpinner() {
+  let button = this
+  let isEnabled = !button.disabled; // Is the button enabled?
+
+  if (isEnabled) { // If so
+    button.disabled = true // Disable the button
+    button.classList.toggle(&amp;#39;is-loading&amp;#39;) // Toggle the class
+
+    setTimeout(() =&amp;gt; { // And do the following after 2 seconds
+      button.classList.toggle(&amp;#39;is-loading&amp;#39;) // Toggle the class
+      button.disabled = false // Enable the button
+    }, 2000)
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add a &lt;code class=&quot;highlighter-rouge&quot;&gt;click&lt;/code&gt; event listener to our button which calls the showSpinner function.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;// Thou shalt do my bidding when clicked
+button.addEventListener(&amp;#39;click&amp;#39;, showSpinner)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;qmmXoN&quot; data-default-tab=&quot;html,result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Asynchronous Events - Vanilla JS (ES6)&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/qmmXoN/&quot;&gt;Asynchronous Events - Vanilla JS (ES6)&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationvue-js&quot;&gt;Implementation — Vue JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Construct a Vue instance and add a data property called &lt;code class=&quot;highlighter-rouge&quot;&gt;loading&lt;/code&gt; to represent our button’s loading state&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;new Vue({
+  el: &amp;#39;#app&amp;#39;,
+  data: {
+    loading: false // Button shouldn&amp;#39;t spin by default :)
+  },
+  methods: {
+    // nothing to see here
+  }
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Mark up our button, adding the following:
+    &lt;ul&gt;
+      &lt;li&gt;A &lt;code class=&quot;highlighter-rouge&quot;&gt;@click&lt;/code&gt; directive to which we can eventually attach an event listener&lt;/li&gt;
+      &lt;li&gt;A &lt;code class=&quot;highlighter-rouge&quot;&gt;:disabled&lt;/code&gt; attribute that we can enable/disable the button as a function of the loading state&lt;/li&gt;
+      &lt;li&gt;A &lt;code class=&quot;highlighter-rouge&quot;&gt;:class&lt;/code&gt; directive so that we can dynamically toggle the &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; class with respect to our loading state&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;button
+  @click=&amp;quot;submitForm&amp;quot;
+  :disabled=&amp;quot;loading&amp;quot;
+  v-bind:class=&amp;quot;{&amp;#39;is-loading&amp;#39;: loading}&amp;quot;
+  class=&amp;quot;bg-blue bn white tc h3 fw6 w-100 relative&amp;quot;&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Implement the &lt;code class=&quot;highlighter-rouge&quot;&gt;submitForm&lt;/code&gt; method and add it to our instance’s methods property. Like in the previous example, this method should add the &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; class and remove it after a duration of two seconds&lt;/li&gt;
+  &lt;li&gt;Fortunately, and thanks to Vue’s two-way data binding, we no longer have to manually set our button’s &lt;code class=&quot;highlighter-rouge&quot;&gt;disabled&lt;/code&gt; attribute since it’s a function of our instance’s state&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;methods: {
+  submitForm: function() {
+    let self = this;
+    self.loading = true; // set the instance&amp;#39;s loading state to true
+
+    setTimeout(() =&amp;gt; {
+      self.loading = false; // set it to false
+    }, 2000) // After two seconds
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;zwwpzO&quot; data-default-tab=&quot;html,result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Asynchronous Events - Vue JS&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/zwwpzO/&quot;&gt;Asynchronous Events - Vue JS&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationreact-js&quot;&gt;Implementation — React JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Scaffold a React component (using the traditional &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; syntax) to represent our button&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;class SpinnerButton extends React.Component {
+  constructor () {
+    super ()
+
+    this.state = { // Similar to Vue&amp;#39;s &amp;#39;data&amp;#39; property
+      loading: false
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Implement our component’s &lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt; method to appease the React gods. Note that we’re only adding the &lt;code class=&quot;highlighter-rouge&quot;&gt;is-loading&lt;/code&gt; class when our state’s &lt;code class=&quot;highlighter-rouge&quot;&gt;loading&lt;/code&gt; attribute is truthy.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;render () {
+  let buttonClass
+
+  this.state.loading ? // Are you loading?
+    buttonClass = &amp;#39;is-loading&amp;#39; : // If so, add &amp;#39;is-loading&amp;#39; class
+    buttonClass = &amp;#39;&amp;#39;
+
+  return(
+    &amp;lt;button
+      disabled={this.state.loading} // Disable if loading
+      className={&amp;quot;bg-blue bn white tc h3 fw6 w-100 relative &amp;quot; + buttonClass}&amp;gt; // Dynamically add the &amp;#39;is-loading&amp;#39; class
+       {&amp;lt;!-- implementation details --&amp;gt;}
+    &amp;lt;/button&amp;gt;
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Add an &lt;code class=&quot;highlighter-rouge&quot;&gt;onClick&lt;/code&gt; handler to our button, and implement the function it calls&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;button onClick={this.submitForm.bind(this)}&amp;gt;&amp;lt;/button&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-javascript&quot;&gt;submitForm () {
+  let self = this
+  self.toggleSpinner()
+
+  setTimeout(() =&amp;gt; {
+    self.toggleSpinner()
+  }, 2000)
+}
+toggleSpinner () {
+  this.setState({
+    loading: !this.state.loading
+  })
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;oWWpGz&quot; data-default-tab=&quot;js,result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Asynchronous Events - React JS&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/oWWpGz/&quot;&gt;Asynchronous Events - React JS&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;</content><author><name></name></author><summary type="html">Page refreshes are so 2005. Single page applications (SPA) are the new hotness, and offer a variety of design challenges. One such challenge is letting users know what’s happening while a request (e.g., a form submission) does it thing. This play will give you the fundamentals needed to prototype such situations.</summary></entry></feed>

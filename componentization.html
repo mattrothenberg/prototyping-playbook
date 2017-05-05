@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Componentization</title>
+  <meta name="description" content="In programs like Sketch, we keep things DRY (“don’t repeat yourself”) by turning our design decisions into “symbols.” It’s no different in front-end land, so...">
+  <script type="text/javascript">
+  !function(e,t,n,a,c,l,m,o,d,f,h,i){c[l]&&(d=e.createElement(t),d[n]=c[l],e[a]("head")[0].appendChild(d),e.documentElement.className+=" wf-cached"),function s(){for(d=e[a](t),f="",h=0;h<d.length;h++)i=d[h][n],i.match(m)&&(f+=i);f&&(c[l]="/**/"+f),setTimeout(s,o+=o)}()}(document,"style","innerHTML","getElementsByTagName",localStorage,"tk",/^@font|^\.tk-/,100);
+</script>
+
+  <script>
+  (function(d) {
+    var config = {
+      kitId: 'pyj3iso',
+      scriptTimeout: 3000,
+      async: false
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/prototyping-playbook/favicon.ico">
+  <link rel="stylesheet" href="/prototyping-playbook/assets/main.css">
+  <link rel="canonical" href="/prototyping-playbook/componentization">
+  <link rel="alternate" type="application/rss+xml" title="Prototyping Playbook" href="/prototyping-playbook/feed.xml">
+
+  
+</head>
+
+  <body>
+    <nav class="pv3 pt5-l relative">
+  <div class="mw8 center ph3 ph5-l flex justify-between">
+    <a class="link color-inherit hover-red" href="/prototyping-playbook/">
+      <figure class="logo ma0">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M55.3,49.3c17.7,0,32-14.4,32-32v-3.7l4.9,4.9c1.3,1.3,3.7,1.3,5,0c0.7-0.7,1-1.6,1-2.5c0-0.9-0.4-1.8-1-2.5l-11-11  c-1.3-1.3-3.5-1.3-4.9-0.1l-11.8,11c-0.7,0.6-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,0.9,2.5c1.3,1.4,3.6,1.5,5,0.2l6-5.5v4.3  c0,13.8-11.2,25-25,25H43.4C27,42.3,13,55,11.5,71.3l0,0.4l-0.4,0.1c-5.7,1.7-9.6,6.9-9.6,12.8c0,7.4,6,13.4,13.4,13.4  c7.4,0,13.4-6,13.4-13.4c0-5.7-3.7-10.8-9.2-12.7l-0.5-0.2l0.1-0.5c1.5-12.5,12.1-22,24.7-22H55.3z M21.3,84.7  c0,3.5-2.9,6.4-6.4,6.4c-3.5,0-6.4-2.9-6.4-6.4c0-3.5,2.9-6.4,6.4-6.4C18.4,78.3,21.3,81.2,21.3,84.7z"/><path d="M76.6,85.7l-5.7-5.4l5.7-5.4c0.7-0.7,1.1-1.5,1.1-2.5s-0.3-1.8-1-2.5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6  c-1.4-1.3-3.7-1.3-5,0.1c-0.7,0.7-1,1.6-1,2.5c0,0.9,0.4,1.8,1.1,2.5l5.7,5.4L55,85.7c-1.4,1.3-1.5,3.6-0.1,5c1.3,1.4,3.6,1.4,5,0.1  l5.9-5.6l5.9,5.6c1.3,1.3,3.7,1.2,5-0.1C78,89.3,78,87.1,76.6,85.7z"/><path d="M41.9,23.4L36.3,18l5.7-5.4c1.4-1.3,1.5-3.6,0.1-5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6c-1.4-1.3-3.7-1.3-5,0.1  c-1.3,1.4-1.3,3.6,0.1,5L26,18l-5.7,5.4c-0.7,0.7-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,1,2.5c1.3,1.4,3.6,1.4,5,0.1l5.9-5.6l5.9,5.6  c1.3,1.3,3.7,1.2,5-0.1c0.7-0.7,1-1.6,1-2.5C43,24.9,42.6,24.1,41.9,23.4z"/></svg>
+
+      </figure>
+    </a>
+  </div>
+</nav>
+
+    <main class="mw8 center pa3 pa5-l" aria-label="Content">
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="mb5-l" itemprop="name headline">
+    <h2 class="f3 mt0 mb2 lh-title fw6 red">
+      Componentization
+    </h2>
+    
+    <p class="mid-gray mt0 mb3 fw3">4 May 2017</p>
+  </header>
+
+  <div class="lh-copy f4 measure-wide center serif" itemprop="articleBody">
+    <p>In programs like Sketch, we keep things DRY (“don’t repeat yourself”) by turning our design decisions into “symbols.” It’s no different in front-end land, so this play will introduce you to a few different ways of encapsulating your designs as “components.”</p>
+
+<h2 id="scenario">Scenario</h2>
+<p>Let’s suppose you’re designing an activity feed for a social networking application. You’ve designed a “card” in Sketch that represents a single item in the feed, but you want to verify that your design works at scale, given a sample set of data.</p>
+
+<h2 id="rundown">Rundown</h2>
+<p>You’ve figured out that the following chunk of markup produces a single, beautiful, “card.”</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;div class=&quot;bg-white ba b--black-10 pa3&quot;&gt;
+  &lt;div class=&quot;flex&quot;&gt;
+    &lt;img class=&quot;mr2&quot; src=&quot;...&quot; alt=&quot;&quot; /&gt;
+    &lt;div&gt;
+      &lt;h1 class=&quot;f6 mv0 blue&quot;&gt;Paul Smith&lt;/h1&gt;
+      &lt;ul class=&quot;mb0 mt1 pl0 list f6&quot;&gt;
+        &lt;li class=&quot;dib black-50&quot;&gt;3 mins&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;p class=&quot;f3 fw3 mt3 mb0&quot;&gt;
+    What a time to be alive! So many front-end resources,
+    so little time...
+  &lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<h2 id="mockup">Mockup</h2>
+<p><img src="/prototyping-playbook/assets/img/posts/component-card.png" alt="The Final Product" /></p>
+
+<p>Having read the play on tabular data, you’ve also identified a schema to represent your activity feed.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">let posts = [
+  {
+    name: &quot;Paul Smith&quot;,
+    timeago: &quot;3 mins&quot;,
+    avatar: &quot;http://placehold.it/50x50&quot;,
+    status: &quot;What a time to be alive! So many front-end resources...&quot;
+  },
+  {
+    name: &quot;Jane Doe&quot;,
+    timeago: &quot;1 hour&quot;,
+    avatar: &quot;http://placehold.it/50x50&quot;,
+    status: &quot;Does anyone actually use Facebook stories?&quot;
+  },
+  {
+    name: &quot;Alex Jackson&quot;,
+    timeago: &quot;2 hours&quot;,
+    avatar: &quot;http://placehold.it/50x50&quot;,
+    status: &quot;Best slice of pizza in NYC? Go.&quot;
+  }
+];</code></pre>
+</div>
+
+<p>With our schema in place, let’s get to the implementations.</p>
+
+<hr />
+
+<h2 id="implementationvanilla-js-es6">Implementation — Vanilla JS (ES6)</h2>
+
+<p>Here’s the game plan:</p>
+<ul>
+  <li>Write a function that takes a post object and returns a chunk of markup with the <strong>name</strong>, <strong>timeago</strong>, <strong>avatar</strong>, and <strong>status</strong> properties interpolated accordingly.</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">function post_markup(post) {
+  return `
+  &lt;div class=&quot;bg-white ba b--black-10 pa3 mb3&quot;&gt;
+    &lt;div class=&quot;flex&quot;&gt;
+      &lt;img class=&quot;mr2&quot; src=&quot;${post.avatar}&quot; alt=&quot;&quot; /&gt;
+      &lt;div&gt;
+        &lt;h1 class=&quot;f6 mv0 blue&quot;&gt;${post.name}&lt;/h1&gt;
+        &lt;ul class=&quot;mb0 mt1 pl0 list f6&quot;&gt;
+          &lt;li class=&quot;dib black-50&quot;&gt;${post.timeago}&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;f3 fw3 mv3&quot;&gt;${post.status}&lt;/p&gt;
+  &lt;/div&gt;
+`
+}</code></pre>
+</div>
+
+<ul>
+  <li>Iterate over the array of posts using <code class="highlighter-rouge">forEach</code><sup id="fnref:foreach"><a href="#fn:foreach" class="footnote">1</a></sup></li>
+  <li>For each post, call the <code class="highlighter-rouge">post_markup</code> function and insert the return value into the DOM</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">posts.forEach(post =&gt; {
+  let postElement = post_markup(post)
+  stage.insertAdjacentHTML(&quot;beforeend&quot;, postElement);
+});</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="JNWoZN" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Componentization - Vanilla JS (ES6)" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/JNWoZN/">Componentization - Vanilla JS (ES6)</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="implementationvue-js">Implementation — Vue JS</h2>
+
+<p>Here’s the game plan:</p>
+<ul>
+  <li>Construct a Vue instance, passing our array of posts to its <code class="highlighter-rouge">data</code> attribute</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">new Vue({
+  el: &quot;#app&quot;, // DOM element that wraps our list
+  data: {
+    posts: posts // our posts array from earlier
+  }
+});</code></pre>
+</div>
+
+<ul>
+  <li>Define a Post component that takes a <code class="highlighter-rouge">post</code> object as its sole property and renders our post markup accordingly</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">Vue.component(&quot;Post&quot;, { // so we can access it in our markup
+  props: [&quot;post&quot;], // each post component gets a post :)
+  template: `
+    &lt;div class=&quot;bg-white ba b--black-10 pa3 mb3&quot;&gt;
+      &lt;div class=&quot;flex&quot;&gt;
+        &lt;img class=&quot;mr2&quot; :src=&quot;post.avatar&quot; alt=&quot;&quot; /&gt;
+        &lt;div&gt;
+          &lt;h1 class=&quot;f6 mv0 blue&quot;&gt;&lt;/h1&gt;
+          &lt;ul class=&quot;mb0 mt1 pl0 list f6&quot;&gt;
+            &lt;li class=&quot;dib black-50&quot;&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p class=&quot;f3 fw3 mv3&quot;&gt;
+        
+      &lt;/p&gt;
+    &lt;/div&gt;
+  ` // please render this template
+});</code></pre>
+</div>
+
+<ul>
+  <li>Add the <code class="highlighter-rouge">&lt;Post/&gt;</code> component to our HTML, and use the <code class="highlighter-rouge">v-for</code> directive to iterate over our global array of posts</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;Post v-for=&quot;post in posts&quot; :post=&quot;post&quot;&gt;&lt;/Post&gt;</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="zwZGxz" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Componentization - Vue JS" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/zwZGxz/">Componentization - Vue JS</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="implementationreact-js">Implementation — React JS</h2>
+
+<p>Here’s the game plan:</p>
+
+<ul>
+  <li>Make a stateless functional component called <code class="highlighter-rouge">&lt;Post&gt;</code> that accepts one post as a property</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">const Post = ({post}) =&gt; {
+  return(
+    &lt;div className=&quot;bg-white ba b--black-10 pa3 mb3&quot;&gt;
+      &lt;div className=&quot;flex&quot;&gt;
+        &lt;img className=&quot;mr2&quot; src={post.avatar} alt=&quot;&quot; /&gt;
+        &lt;div&gt;
+          &lt;h1 className=&quot;f6 mv0 blue&quot;&gt;{post.name}&lt;/h1&gt;
+          &lt;ul className=&quot;mb0 mt1 pl0 list f6&quot;&gt;
+            &lt;li className=&quot;dib black-50&quot;&gt;{post.timeago}&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;p className=&quot;f3 fw3 mv3&quot;&gt;
+        { post.status }
+      &lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</code></pre>
+</div>
+
+<ul>
+  <li>Make another stateless functional component called <code class="highlighter-rouge">&lt;PostList&gt;</code> that accepts an <em>array</em> of posts as a property and maps over it, returning individual <code class="highlighter-rouge">&lt;Post&gt;</code> components accordingly</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">const PostList = ({posts}) =&gt; {
+  return(
+    &lt;div&gt;
+      {
+        posts.map((post) =&gt; {
+          return &lt;Post post={post}/&gt;
+        })
+      }
+    &lt;/div&gt;
+  )
+}</code></pre>
+</div>
+
+<p data-height="400" data-theme-id="dark" data-slug-hash="PmpwrV" data-default-tab="js,result" data-user="mattrothenberg" data-embed-version="2" data-preview="true" data-pen-title="Componentization - React JS" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/PmpwrV/">Componentization - React JS</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h2 id="footnotes">Footnotes</h2>
+<div class="footnotes">
+  <ol>
+    <li id="fn:foreach">
+      <p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach?v=example" target="_blank"><code class="highlighter-rouge">forEach</code> on MDN</a>&nbsp;<a href="#fnref:foreach" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+  <script src="/prototyping-playbook/assets/prism/prism.js" type="text/javascript"></script>
+</article>
+
+    </main>
+  </body>
+</html>
