@@ -10,7 +10,6 @@ Designing tables in Sketch can be downright frustrating. And despite the myriad 
 ## Scenario
 Let’s suppose you’re designing a dashboard and you need to turn a raw, CSV export of project data into a beautiful table.
 
-## Mockup
 ![The Final Product]({{ site.baseurl }}/assets/img/posts/working-with-data.png)
 
 ## Rundown

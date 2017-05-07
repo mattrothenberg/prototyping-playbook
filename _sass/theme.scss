@@ -28,6 +28,11 @@ body {
   fill: $red;
 }
 
+.post a {
+  color: $red;
+  text-decoration: none;
+}
+
 .post pre {
   border: 0;
   margin: 1em 0;
