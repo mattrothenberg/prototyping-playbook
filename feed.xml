@@ -1,10 +1,281 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-05T10:39:04-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>A winner's guide to prototyping in the browser
-</subtitle><entry><title type="html">Working with Tabular Data</title><link href="/prototyping-playbook/working-with-tabular-data" rel="alternate" type="text/html" title="Working with Tabular Data" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/working-with-data</id><content type="html" xml:base="/prototyping-playbook/working-with-tabular-data">&lt;p&gt;Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise “[an] easy way to populate your design with meaningful data,” I’m convinced that code is often a better tool for the job. This play will get you up and iterating over data sets with Javascript, like a pro, in ~5 minutes.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-07T13:25:53-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>A winner's guide to prototyping in the browser
+</subtitle><entry><title type="html">Fake it ‘til you Make it</title><link href="/prototyping-playbook/fake-it-til-you-make-it" rel="alternate" type="text/html" title="Fake it 'til you Make it" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/fake-it-til-you-make-it</id><content type="html" xml:base="/prototyping-playbook/fake-it-til-you-make-it">&lt;p&gt;This is &lt;em&gt;not&lt;/em&gt; an essay on the merit (or lack thereof) of using fake data in your prototype. Instead, this play gives you the tools you need to elevate your game from Lorem Ipsum to data that at least &lt;em&gt;resembles&lt;/em&gt; what will eventually go in the interface you’re building&lt;/p&gt;
+
+&lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
+
+&lt;p&gt;You’ve mastered the art of &lt;a href=&quot;/prototyping-playbook/working-with-tabular-data&quot;&gt;working with tabular data&lt;/a&gt;. This time, though, you don’t have a CSV export handy, and need to populate a table with around ~25 rows of sample data. You know the general shape of the data, but need a means of generating it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/prototyping-playbook/assets/img/posts/fake-data.png&quot; alt=&quot;The Final Product&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;rundown&quot;&gt;Rundown&lt;/h2&gt;
+&lt;p&gt;As with the aforementioned play, we start by identifying a schema to represent the data. Each table row should show the user’s &lt;strong&gt;avatar&lt;/strong&gt;, &lt;strong&gt;name&lt;/strong&gt;, &lt;strong&gt;email&lt;/strong&gt;, and &lt;strong&gt;favorite color&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let user = {
+  name: &amp;#39;Matt Rothenberg&amp;#39;,
+  avatar: &amp;#39;http://placehold.it/50x50&amp;#39;,
+  email: &amp;#39;hello@mattrothenberg.com&amp;#39;,
+  color: &amp;#39;#ffa2a2&amp;#39;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We’ll leverage a tool called &lt;a href=&quot;https://github.com/marak/faker.js&quot; target=&quot;_blank&quot;&gt;Faker.js&lt;/a&gt; to generate as much fake data as we’d like. Faker can generate a wide variety of fake data, and offers an intuitive API for doing so. Let’s replace the hard-coded user object above with a &lt;em&gt;function&lt;/em&gt; that generates a fake user instead.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;function buildFakeUser() {
+  return {
+    name: faker.internet.userName(),
+    avatar: faker.internet.avatar(),
+    email: faker.internet.email(),
+    color: faker.internet.color()
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now when we call that function, we get a random user!&lt;/p&gt;
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let user = buildFakeUser()
+console.log(user)
+/*
+  Object {
+    name: &amp;quot;Mae65&amp;quot;
+    avatar: &amp;quot;https://s3.amazonaws.com/uifaces/faces/twitter/pierre_nel/128.jpg&amp;quot;,
+    email: &amp;quot;Arch_Considine@yahoo.com&amp;quot;,
+    color: &amp;quot;#1b327b&amp;quot;,
+  }
+*/&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Our data set is ready. Let’s get to prototyping!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;implementationvanilla-js-es6&quot;&gt;Implementation — Vanilla JS (ES6)&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Build a list of fake users&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let users = []
+
+for (var i = 0; i &amp;lt; 25; i++) {
+  users.push( buildFakeUser() )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Write a function that takes a user object and returns the corresponding table row markup (interpolating the &lt;strong&gt;avatar&lt;/strong&gt;, &lt;strong&gt;name&lt;/strong&gt;, and &lt;strong&gt;email&lt;/strong&gt;, and &lt;strong&gt;color&lt;/strong&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;function generateTableRow (user) {
+  return `
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+        &amp;lt;div class=&amp;quot;flex items-center&amp;quot;&amp;gt;
+          &amp;lt;img class=&amp;quot;br-100 w2 h2 mr2&amp;quot; src=&amp;quot;${user.avatar}&amp;quot;/&amp;gt;
+          ${user.name}
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+        ${user.email}
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+        &amp;lt;div class=&amp;quot;flex items-center&amp;quot;&amp;gt;
+          &amp;lt;div
+            class=&amp;quot;w1 h1 mr2&amp;quot;
+            style=&amp;quot;background-color: ${user.color}&amp;quot;&amp;gt;
+          &amp;lt;/div&amp;gt;
+          ${user.color}
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+  `
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Iterate over our Array of users using &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt;&lt;sup id=&quot;fnref:foreach&quot;&gt;&lt;a href=&quot;#fn:foreach&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;users.forEach(user =&amp;gt; {
+  let tableRow = generateTableRow(user)
+  tableBody.insertAdjacentHTML(&amp;quot;beforeend&amp;quot;, tableRow)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;wdrVgM&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Fake Data - Vanilla JS (ES6)&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/wdrVgM/&quot;&gt;Fake Data - Vanilla JS (ES6)&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationvue-js&quot;&gt;Implementation — Vue JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Construct a Vue instance, taking note to:
+    &lt;ul&gt;
+      &lt;li&gt;Initialize an empty &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; array on the instance’s data property&lt;/li&gt;
+      &lt;li&gt;Hook into the instance’s &lt;code class=&quot;highlighter-rouge&quot;&gt;created&lt;/code&gt; life cycle event in order to fill the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; array with fake data&lt;sup id=&quot;fnref:lifecycle&quot;&gt;&lt;a href=&quot;#fn:lifecycle&quot; class=&quot;footnote&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;new Vue({
+  el: &amp;quot;#app&amp;quot;,
+  data: {
+    users: []
+  },
+  created: function() {
+    for (var i = 0; i &amp;lt; 25; i++) {
+      this.users.push(buildFakeUser());
+    }
+  }
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Define a &lt;code class=&quot;highlighter-rouge&quot;&gt;user-table-row&lt;/code&gt; component to represent a given row of fake user data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;Vue.component(&amp;#39;user-table-row&amp;#39;, {
+  props: [&amp;#39;user&amp;#39;],
+  template: `
+  &amp;lt;tr&amp;gt;
+    &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+      &amp;lt;div class=&amp;quot;flex items-center&amp;quot;&amp;gt;
+        &amp;lt;img class=&amp;quot;br-100 w2 h2 mr2&amp;quot; :src=&amp;quot;user.avatar&amp;quot;/&amp;gt;
+
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/td&amp;gt;
+    &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+  
+    &amp;lt;/td&amp;gt;
+    &amp;lt;td class=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+      &amp;lt;div class=&amp;quot;flex items-center&amp;quot;&amp;gt;
+        &amp;lt;div
+          class=&amp;quot;w1 h1 mr2&amp;quot;
+          v-bind:style=&amp;quot;{backgroundColor: user.color}&amp;quot;&amp;gt;
+        &amp;lt;/div&amp;gt;
+        
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/td&amp;gt;
+  &amp;lt;/tr&amp;gt;
+`
+});&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Iterate over the instance’s &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; property in our template using &lt;code class=&quot;highlighter-rouge&quot;&gt;v-for&lt;/code&gt; syntax. Due to a template parsing caveat in Vue, we must use the &lt;code class=&quot;highlighter-rouge&quot;&gt;is&lt;/code&gt; attribute to define which component should be rendered.&lt;sup id=&quot;fnref:caveat&quot;&gt;&lt;a href=&quot;#fn:caveat&quot; class=&quot;footnote&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-markup&quot;&gt;&amp;lt;tbody&amp;gt;
+  &amp;lt;tr is=&amp;quot;user-table-row&amp;quot; v-for=&amp;quot;user in users&amp;quot; :user=&amp;quot;user&amp;quot;&amp;gt;&amp;lt;/tr&amp;gt;
+&amp;lt;/tbody&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;gWXoZP&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Fake Data - Vue JS (ES6)&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/gWXoZP/&quot;&gt;Fake Data - Vue JS (ES6)&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;implementationreact-js&quot;&gt;Implementation — React JS&lt;/h2&gt;
+
+&lt;p&gt;Here’s the game plan:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create a stateless functional component called &lt;code class=&quot;highlighter-rouge&quot;&gt;UserTable&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;It should accept an array of users as a property&lt;/li&gt;
+      &lt;li&gt;It should render a &lt;code class=&quot;highlighter-rouge&quot;&gt;UserTableRow&lt;/code&gt; component for each user in the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; array&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;const UserTable = ({users}) =&amp;gt; {
+  return(
+    &amp;lt;table className=&amp;quot;bg-white w-100 data-table f6&amp;quot; cellspacing=&amp;quot;0&amp;quot;&amp;gt;
+      &amp;lt;thead&amp;gt;
+        &amp;lt;tr&amp;gt;
+          &amp;lt;th className=&amp;quot;tl pa3 bb b--black-10&amp;quot;&amp;gt;User&amp;lt;/th&amp;gt;
+          &amp;lt;th className=&amp;quot;tl pa3 bb b--black-10&amp;quot;&amp;gt;Email&amp;lt;/th&amp;gt;
+          &amp;lt;th className=&amp;quot;tl pa3 bb b--black-10&amp;quot;&amp;gt;Fav Color&amp;lt;/th&amp;gt;
+        &amp;lt;/tr&amp;gt;
+      &amp;lt;/thead&amp;gt;
+      &amp;lt;tbody&amp;gt;
+        {
+          users.map(function (user) {
+            return &amp;lt;UserTableRow user={user}&amp;gt;&amp;lt;/UserTableRow&amp;gt;
+          })
+        }
+      &amp;lt;/tbody&amp;gt;
+    &amp;lt;/table&amp;gt;
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Create another stateless functional component called &lt;code class=&quot;highlighter-rouge&quot;&gt;UserTableRow&lt;/code&gt;
+    &lt;ul&gt;
+      &lt;li&gt;It should accept a single user object as a property&lt;/li&gt;
+      &lt;li&gt;It should render out &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;tr&amp;gt;&lt;/code&gt; markup accordingly&lt;/li&gt;
+      &lt;li&gt;In React, the HTML &lt;code class=&quot;highlighter-rouge&quot;&gt;style&lt;/code&gt; attribute accepts a JavaScript object with camelCased properties rather than a CSS string. At the top of our render function, we can build that object by interpolating the &lt;code class=&quot;highlighter-rouge&quot;&gt;color&lt;/code&gt; attribute on our user prop.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;const UserTableRow = ({user}) =&amp;gt; {
+  let favColorStyle = {
+    backgroundColor: user.color
+  }
+  return (
+    &amp;lt;tr&amp;gt;
+      &amp;lt;td className=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+        &amp;lt;div className=&amp;quot;flex items-center&amp;quot;&amp;gt;
+          &amp;lt;img className=&amp;quot;br-100 w2 h2 mr2&amp;quot; src={user.avatar}/&amp;gt;
+          {user.name}
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td className=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+        {user.email}
+      &amp;lt;/td&amp;gt;
+      &amp;lt;td className=&amp;quot;pa3 bb b--black-10&amp;quot;&amp;gt;
+        &amp;lt;div className=&amp;quot;flex items-center&amp;quot;&amp;gt;
+          &amp;lt;div className=&amp;quot;w1 h1 mr2&amp;quot; style={favColorStyle}&amp;gt;&amp;lt;/div&amp;gt;
+          {user.color}
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/td&amp;gt;
+    &amp;lt;/tr&amp;gt;
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;400&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;JNOLdR&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-preview=&quot;true&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Fake Data - React JS&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/JNOLdR/&quot;&gt;Fake Data - React JS&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
+
+&lt;h2 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h2&gt;
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:foreach&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach?v=example&quot; target=&quot;_blank&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt; on MDN&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:foreach&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:lifecycle&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://vuejs.org/v2/guide/instance.html#Instance-Lifecycle-Hooks&quot; target=&quot;_blank&quot;&gt;Vue Lifecycle Events&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:lifecycle&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li id=&quot;fn:caveat&quot;&gt;
+      &lt;p&gt;&lt;a href=&quot;https://vuejs.org/v2/guide/components.html#DOM-Template-Parsing-Caveats&quot; target=&quot;_blank&quot;&gt;Template Parsing Caveat&lt;/a&gt;&amp;nbsp;&lt;a href=&quot;#fnref:caveat&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content><author><name></name></author><summary type="html">This is not an essay on the merit (or lack thereof) of using fake data in your prototype. Instead, this play gives you the tools you need to elevate your game from Lorem Ipsum to data that at least resembles what will eventually go in the interface you’re building</summary></entry><entry><title type="html">Working with Tabular Data</title><link href="/prototyping-playbook/working-with-tabular-data" rel="alternate" type="text/html" title="Working with Tabular Data" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/working-with-data</id><content type="html" xml:base="/prototyping-playbook/working-with-tabular-data">&lt;p&gt;Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise “[an] easy way to populate your design with meaningful data,” I’m convinced that code is often a better tool for the job. This play will get you up and iterating over data sets with Javascript, like a pro, in ~5 minutes.&lt;/p&gt;
 
 &lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
 &lt;p&gt;Let’s suppose you’re designing a dashboard and you need to turn a raw, CSV export of project data into a beautiful table.&lt;/p&gt;
 
-&lt;h2 id=&quot;mockup&quot;&gt;Mockup&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;/prototyping-playbook/assets/img/posts/working-with-data.png&quot; alt=&quot;The Final Product&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;rundown&quot;&gt;Rundown&lt;/h2&gt;
