@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mattrothenberg/prototyping-playbook#readme",
   "dependencies": {
+    "critical": "^0.8.4",
     "gulp": "^3.9.1",
     "gulp-shell": "^0.6.3",
     "gulp-uncss": "^1.0.6"
