@@ -17,5 +17,8 @@ bundle install
 
 Spin up the web server locally by running `jekyll serve`. You can access the website locally at http://localhost:4000/prototyping-playbook/
 
+## Collaboration
+Prototyping Playbook is meant to be open and collaborative. If you'd like to see a play added, feel free to open an Issue. Feel like writing a play yourself? Even better! Send a PR and I'll work with you on getting it ready for prime time.
+
 ## Support
 If you're stuck or have any questions, don't hesitate to open an Issue or contact me directly on Twitter [@mattrothenberg](https://twitter.com/mattrothenberg)
