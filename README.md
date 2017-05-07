@@ -14,3 +14,6 @@ bundle install
 ## Local Development
 
 Spin up the web server locally by running `jekyll serve`. You can access the website locally at http://localhost:4000/prototyping-playbook/
+
+## Support
+If you're stuck or have any questions, don't hesitate to open an Issue or contact me directly on Twitter [@mattrothenberg](https://twitter.com/mattrothenberg)
