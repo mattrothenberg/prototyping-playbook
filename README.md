@@ -3,11 +3,11 @@
 # Prototyping Playbook
 https://mattrothenberg.github.io/prototyping-playbook/
 
-A collection of short tutorials (or “plays”) geared towards designers who are interested in using the browser for their design and prototyping needs.
+A collection of short tutorials (or “plays”) geared towards designers who are interested in using the browser for their design and prototyping needs. 
 
 ## Installation
 
-Clone the repo and install Jekyll dependencies
+Clone the repo and install the required Jekyll dependencies
 
 ```
 bundle install

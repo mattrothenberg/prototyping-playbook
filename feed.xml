@@ -1,5 +1,182 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-07T17:54:49-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>A winner's guide to prototyping in the browser
-</subtitle><entry><title type="html">Fake it ‘til you Make it</title><link href="/prototyping-playbook/fake-it-til-you-make-it" rel="alternate" type="text/html" title="Fake it 'til you Make it" /><published>2017-05-04T16:23:10-04:00</published><updated>2017-05-04T16:23:10-04:00</updated><id>/prototyping-playbook/fake-it-til-you-make-it</id><content type="html" xml:base="/prototyping-playbook/fake-it-til-you-make-it">&lt;p&gt;This is &lt;em&gt;not&lt;/em&gt; an essay on the merit (or lack thereof) of using fake data in your prototype. Instead, this play gives you the tools you need to elevate your game from Lorem Ipsum to data that at least &lt;em&gt;resembles&lt;/em&gt; what will eventually go in the interface you’re building&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-12T11:56:46-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>A winner's guide to prototyping in the browser
+</subtitle><entry><title type="html">Animate with Swagger (and Stagger)</title><link href="/prototyping-playbook/staggered-animations" rel="alternate" type="text/html" title="Animate with Swagger (and Stagger)" /><published>2017-05-12T09:00:00-04:00</published><updated>2017-05-12T09:00:00-04:00</updated><id>/prototyping-playbook/staggered-animations</id><content type="html" xml:base="/prototyping-playbook/staggered-animations">&lt;p&gt;Animations make the web a far more interesting place. In this post, we’ll learn how to roll our own staggered list animation with Vanilla JS and CSS. No frameworks or plugins. 60 frames-per-second or bust!&lt;/p&gt;
+
+&lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
+
+&lt;p&gt;You’re building a health and fitness web application, and you’d like to enhance the UI by adding animation. You’ve designed a step-count leaderboard, but want each list item to fade in one after the other (staggering between each iteration).&lt;/p&gt;
+
+&lt;h2 id=&quot;mockup&quot;&gt;Mockup&lt;/h2&gt;
+
+&lt;div style=&quot;width:100%;height:0px;position:relative;padding-bottom:56.237%;&quot;&gt;&lt;iframe src=&quot;https://streamable.com/s/kts6b/rcvaxo&quot; frameborder=&quot;0&quot; width=&quot;100%&quot; height=&quot;100%&quot; allowfullscreen=&quot;&quot; style=&quot;width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;&quot;&gt;&lt;/iframe&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;rundown&quot;&gt;Rundown&lt;/h2&gt;
+
+&lt;h3 id=&quot;designing--animating-the-bars&quot;&gt;Designing &amp;amp; Animating The Bars&lt;/h3&gt;
+
+&lt;p&gt;From a design perspective, we’re building a horizontal bar chart (sorted by longest to shortest). Each bar has a dynamic &lt;strong&gt;width&lt;/strong&gt;, a fake &lt;strong&gt;name&lt;/strong&gt;, and a fake &lt;strong&gt;step count&lt;/strong&gt;. Instead of hard-coding each bar’s width as an inline style, we’ll assign a custom &lt;code class=&quot;highlighter-rouge&quot;&gt;data-width&lt;/code&gt; attribute that can be read in our Javascript.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-html&quot;&gt;&amp;lt;div
+    data-width=&amp;quot;100&amp;quot;
+    class=&amp;quot;bar mb2 h2 br4 flex items-center justify-between pr3&amp;quot;&amp;gt;
+    &amp;lt;h1 class=&amp;quot;name mv0 fw6 f7 white&amp;quot;&amp;gt;
+      &amp;lt;!-- Name to be set via Javascript --&amp;gt;
+    &amp;lt;/h1&amp;gt;
+    &amp;lt;h2 class=&amp;quot;steps mv0 fw4 f7 white-50&amp;quot;&amp;gt;
+      &amp;lt;!-- Steps to be set via Javascript --&amp;gt;
+    &amp;lt;/h2&amp;gt;
+  &amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Where the magic happens, though, is the CSS for our &lt;code class=&quot;highlighter-rouge&quot;&gt;.bar&lt;/code&gt; class. We apply a gradient to make it look pretty, and add a keyframe animation that tweens the bar from zero to full opacity.&lt;/p&gt;
+
+&lt;p&gt;You’ll note that we’re omitting both the &lt;code class=&quot;highlighter-rouge&quot;&gt;animation-duration&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;animation-delay&lt;/code&gt; property from our CSS. In the next step, you’ll see how we can use Javascript to add these values dynamically and give our animation a wonderful “staggered” effect.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;NB: You don’t need Javascript to achieve this effect. Sass / SCSS can help you get the same outcome&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-css&quot;&gt;.bar {
+  animation: grow-bar cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  background: linear-gradient(to left, #004e92, #000428);
+  opacity: 0;
+}
+
+@keyframes grow-bar {
+  0% {
+    width: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In our Javascript, we’re iterating over the &lt;code class=&quot;highlighter-rouge&quot;&gt;.bar&lt;/code&gt; elements on the page, and performing a few actions:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Read&lt;/strong&gt; the bar’s &lt;code class=&quot;highlighter-rouge&quot;&gt;data-width&lt;/code&gt; attribute and &lt;strong&gt;set&lt;/strong&gt; the element’s width accordingly&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Set&lt;/strong&gt; the bar’s &lt;code class=&quot;highlighter-rouge&quot;&gt;animation-duration&lt;/code&gt; to the variable &lt;code class=&quot;highlighter-rouge&quot;&gt;BAR_ANIM_DURATION&lt;/code&gt;. By creating this variable, we can adjust the speed of our animation (for debugging/fine-tuning) by tweaking one variable.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Calculate&lt;/strong&gt; and &lt;strong&gt;set&lt;/strong&gt; a staggered animation-delay via some simple arithmetic&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/prototyping-playbook/assets/img/posts/bar-delay.png&quot; alt=&quot;Dynamic Animation Delay&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that with each iteration of the &lt;code class=&quot;highlighter-rouge&quot;&gt;forEach&lt;/code&gt;, loop, the &lt;code class=&quot;highlighter-rouge&quot;&gt;animation-delay&lt;/code&gt; property increases ever-so-slightly, giving us a staggered effect. If we had hard-coded a constant value in our loop, the bars would all fade in at the exact same time.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;let bars = document.querySelectorAll(&amp;#39;.bar&amp;#39;)
+const NUM_ELEMENTS = bars.length
+const BAR_ANIM_DURATION = .65
+
+bars.forEach((bar, index) =&amp;gt; {
+  // Read &amp;#39;data-width&amp;#39; and set the bar&amp;#39;s width
+  bar.style.width = `${bar.getAttribute(&amp;#39;data-width&amp;#39;)}%`
+
+  // Set &amp;#39;animation-duration&amp;#39;
+  bar.style.animationDuration = `${BAR_ANIM_DURATION}s`
+
+  // Calculate Staggered Delay
+  let barDelay = index * (BAR_ANIM_DURATION / NUM_ELEMENTS)
+
+  // Set Staggered Delay
+  bar.style.animationDelay = `${barDelay}s`
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;animating-the-names&quot;&gt;Animating The Names&lt;/h3&gt;
+
+&lt;p&gt;We’ll take a similar approach to animate the names inside of each bar. In our CSS, let’s add another keyframe animation that tweens each name from zero to full opacity, and moves it to a neutral X position.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-css&quot;&gt;.name {
+  animation: slide-name ease forwards;
+  opacity: 0;
+}
+
+@keyframes slide-name {
+  0% {
+    transform: translateX(-25px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As mentioned before, we can leverage our ability to &lt;a href=&quot;/prototyping-playbook/fake-it-til-you-make-it&quot; target=&quot;_blank&quot;&gt;work with fake data&lt;/a&gt; to assign a random name to each bar. Moreover, we can perform a similar calculation to stagger the animation of each name element.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;// Animate names quicker than bars
+const NAME_ANIM_DURATION = .25
+
+bars.forEach((bar, index) =&amp;gt; {
+  let name = bar.querySelector(&amp;#39;.name&amp;#39;)
+
+  // Assign a fake name
+  name.innerText = faker.name.findName()
+
+  // Set &amp;#39;animation-duration&amp;#39;
+  name.style.animationDuration = `${NAME_ANIM_DURATION}s`
+
+  // Calculate Staggered Delay
+  let barDelay = index * (BAR_ANIM_DURATION / NUM_ELEMENTS)
+  let nameDelay = .15 + barDelay + (index * (NAME_ANIM_DURATION / NUM_ELEMENTS))
+
+  // Set Staggered Delay
+  name.style.animationDelay = `${nameDelay}s`
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;animating-the-step-counts&quot;&gt;Animating The Step Counts&lt;/h3&gt;
+
+&lt;p&gt;By now, you should be a pro at this. Let’s add another keyframe animation that tweens each step count from zero to full opacity, and scales it up from quarter to full size.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-css&quot;&gt;.steps {
+  animation: grow-steps ease forwards;
+  opacity: 0;
+}
+
+@keyframes grow-steps {
+  0% {
+    transform: scale(.25);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And in our Javascript, let’s perform that same calculation to create a staggered animation delay.&lt;/p&gt;
+
+&lt;div&gt;
+  &lt;pre data-line=&quot;&quot;&gt;&lt;code class=&quot;language-js&quot;&gt;const STEPS_ANIM_DURATION = .25
+
+bars.forEach((bar, index) =&amp;gt; {
+  let steps = bar.querySelector(&amp;#39;.steps&amp;#39;)
+
+  // Add a bogus step count
+  steps.innerText = (NUM_ELEMENTS - index) * 1000
+
+  // Set &amp;#39;animation-duration&amp;#39;
+  steps.style.animationDuration = `${STEPS_ANIM_DURATION}s`
+
+  // Calculate Staggered Delay
+  let barDelay = index * (BAR_ANIM_DURATION / NUM_ELEMENTS)
+  let nameDelay = .15 + barDelay + (index * (NAME_ANIM_DURATION / NUM_ELEMENTS))
+  let stepsDelay = nameDelay + (index * (STEPS_ANIM_DURATION / NUM_ELEMENTS))
+
+  // Set Staggered Delay
+  steps.style.animationDelay = `${stepsDelay}s`
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p data-height=&quot;500&quot; data-theme-id=&quot;dark&quot; data-slug-hash=&quot;QvrwPW&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;QvrwPW&quot; data-preview=&quot;true&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;http://codepen.io/mattrothenberg/pen/QvrwPW/&quot;&gt;QvrwPW&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;</content><author><name></name></author><summary type="html">Animations make the web a far more interesting place. In this post, we’ll learn how to roll our own staggered list animation with Vanilla JS and CSS. No frameworks or plugins. 60 frames-per-second or bust!</summary></entry><entry><title type="html">Fake it ‘til you Make it</title><link href="/prototyping-playbook/fake-it-til-you-make-it" rel="alternate" type="text/html" title="Fake it 'til you Make it" /><published>2017-05-05T16:23:10-04:00</published><updated>2017-05-05T16:23:10-04:00</updated><id>/prototyping-playbook/fake-it-til-you-make-it</id><content type="html" xml:base="/prototyping-playbook/fake-it-til-you-make-it">&lt;p&gt;This is &lt;em&gt;not&lt;/em&gt; an essay on the merit (or lack thereof) of using fake data in your prototype. Instead, this play gives you the tools you need to elevate your game from Lorem Ipsum to data that at least &lt;em&gt;resembles&lt;/em&gt; what will eventually go in the interface you’re building&lt;/p&gt;
 
 &lt;h2 id=&quot;scenario&quot;&gt;Scenario&lt;/h2&gt;
 
