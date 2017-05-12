@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Animate with Swagger (and Stagger)"
-date:   2017-05-04 16:23:10 -0400
+date: 2017-05-12 09:00:00 -0400
 permalink: 'staggered-animations'
 ---
 
