@@ -4,8 +4,10 @@
 @import 'colors';
 @import 'codehighlighting';
 
+
+
 ::selection {
-  background: rgba($red, .10);
+  @extend .bg-washed-red;
 }
 
 
@@ -17,6 +19,22 @@ body {
 
 .icon-octocat {
   fill: $red;
+}
+
+.tracked-1 {
+  letter-spacing: .085em;
+}
+
+.category-list-item:not(:last-of-type):after {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRTM1MzU0IiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgODIzLjkzNDI3IDgyMy45MTY5OSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjAwMCAyMDAwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48cGF0aCBzdHlsZT0iIiBkPSJtIDc3Ni43NTY3OCwwIGMgLTEyLjA2NCwwIC0yNC4xMjQsNC42MDggLTMzLjM0NSwxMy44MjggTCA0MTEuOTQzNzgsMzQ1LjI3MzAxIDgwLjUyNTc1LDEzLjg3OSBjIC0xOC40NDMsLTE4LjQ0MSAtNDguMjU1LC0xOC40NDEgLTY2LjY5NSwwIC0xOC40NDEsMTguNDQgLTE4LjQ0MSw0OC4yNDQgMCw2Ni42ODUgbCAzMzEuNDE4LDMzMS4zOTYwMSAtMzMxLjQxOCwzMzEuMzk5IGMgLTE4LjQ0MSwxOC40NCAtMTguNDQxLDQ4LjI1IDAsNjYuNjkxIDkuMTk4LDkuMTk4IDIxLjI3MiwxMy44MTcgMzMuMzQ3LDEzLjgxNyAxMi4wNzMsMCAyNC4xNSwtNC42MTkgMzMuMzQ4LC0xMy44MTcgbCAzMzEuNDE4MDMsLTMzMS4zOTggMzMxLjQ2OCwzMzEuNDQ1IGMgOS4xOTcsOS4xOTggMjEuMjcxLDEzLjgyIDMzLjM0NSwxMy44MiAxMi4wNzQsMCAyNC4xMDEsLTQuNjIyIDMzLjM0NiwtMTMuODIgMTguNDQyLC0xOC40NDEgMTguNDQyLC00OC4yNDcgMCwtNjYuNjg3IGwgLTMzMS40NjQsLTMzMS40NDYgMzMxLjQ2NCwtMzMxLjQ0NTAxIGMgMTguNDQyLC0xOC40NDEgMTguNDQyLC00OC4yNSAwLC02Ni42OTEgQyA4MDAuODgxNzgsNC42MDggNzg4LjgxNjc4LDAgNzc2Ljc1Njc4LDAgWiIgZmlsbD0iI0UzNTM1NCIvPjwvc3ZnPg==");
+  content: '';
+  height: 8px;
+  margin: 0 .15rem 1px .35rem;
+  width: 8px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: contain;
 }
 
 .logo {

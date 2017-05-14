@@ -3,6 +3,7 @@ layout: post
 title:  "Animate with Swagger (and Stagger)"
 date: 2017-05-12 09:00:00 -0400
 permalink: 'staggered-animations'
+categories: ['Vanilla JS']
 ---
 
 Animations make the web a far more interesting place. In this post, we'll learn how to roll our own staggered list animation with Vanilla JS and CSS. No frameworks or plugins. 60 frames-per-second or bust!

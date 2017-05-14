@@ -3,11 +3,16 @@ layout: default
 ---
 <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="mb5-l" itemprop="name headline">
-    <h2 class="f3 mt0 mb2 lh-title fw6 red">
-      {{ page.title | escape }}
-    </h2>
     {% assign date_format = "%D" %}
-    <p class="mid-gray mt0 mb3 fw3">{{ page.date | date: "%-d %B %Y"}}</p>
+    <h2 class="mv0 fw9 ttu f6 tracked-1 red o-70">{{ page.date | date: "%-d %B %Y"}}</h2>
+    <h1 class="f3 mt0 mb2 lh-title fw6 red">
+      {{ page.title | escape }}
+    </h1>
+    <ul class="list mt3 mb0 pl0">
+      {% for category in page.categories %}
+        <li class="dib ttu dark-gray f7 fw6 tracked-1 bg-washed-red red pv1 ph2 mr2">{{ category }}</li>
+      {% endfor %}
+    </ul>
   </header>
 
   <div class="lh-copy f4 measure-wide center serif" itemprop="articleBody">

@@ -5,14 +5,21 @@ layout: default
 <section class="home">
   {{ content }}
   {% for post in site.posts %}
-    <article class="mb4">
+    <article class="mb4 mb5-l">
       <header>
+        <div class="flex items-center mb1">
+          <h4 class="mv0 fw9 ttu f6 tracked-1 red o-70">{{ post.date | date: "%-d %B %Y"}}</h4>
+        </div>
         <h2 class="f3 mt0 mb2 lh-title fw6 red">
           <a class="link color-inherit hover-red" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
         </h2>
-        <p class="mid-gray mt0 mb3 fw3">{{ post.date | date: "%-d %B %Y"}}</p>
       </header>
       <p class="lh-copy mt0 mb0 serif f4 measure-wide">{{ post.excerpt | remove: '<p>' | remove: '</p>' }}</p>
+      <ul class="list mt2 mb0 pl0">
+        {% for category in post.categories %}
+          <li class="dib ttu dark-gray f7 fw6 tracked-1 bg-washed-red red pv1 ph2 mr2">{{ category }}</li>
+        {% endfor %}
+      </ul>
   </article>
   {% endfor %}
 </section>

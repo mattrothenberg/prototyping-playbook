@@ -3,6 +3,7 @@ layout: post
 title:  Simulating Asynchronous Events
 date:   2017-05-04 16:23:10 -0400
 permalink: 'simulating-async-events'
+categories: ['Vanilla JS', 'Vue', 'React']
 ---
 
 Page refreshes are _so_ 2005. Single page applications (SPA) are the new hotness, and offer a variety of design challenges. One such challenge is letting users know what's happening while a request (e.g., a form submission) does it thing. This play will give you the fundamentals needed to prototype such situations.

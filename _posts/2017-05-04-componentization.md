@@ -3,6 +3,7 @@ layout: post
 title:  Componentization
 date:   2017-05-04 16:23:10 -0400
 permalink: 'componentization'
+categories: ['Vanilla JS', 'Vue', 'React']
 ---
 
 In programs like Sketch, we keep things DRY ("don't repeat yourself") by turning our design decisions into "symbols." It's no different in front-end land, so this play will introduce you to a few different ways of encapsulating your designs as "components."

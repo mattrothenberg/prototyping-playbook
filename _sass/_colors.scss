@@ -1,7 +1,8 @@
 $red: #E35354;
 
 $colors: (
-  'red': $red
+  'red': $red,
+  'washed-red': rgba($red, .10)
 );
 
 @each $name, $color in $colors {

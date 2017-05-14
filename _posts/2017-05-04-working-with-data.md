@@ -3,6 +3,7 @@ layout: post
 title:  "Working with Tabular Data"
 date:   2017-05-04 16:23:10 -0400
 permalink: 'working-with-tabular-data'
+categories: ['Vanilla JS', 'Vue', 'React']
 ---
 
 Designing tables in Sketch can be downright frustrating. And despite the myriad plugins that advertise "[an] easy way to populate your design with meaningful data," I'm convinced that code is often a better tool for the job. This play will get you up and iterating over data sets with Javascript, like a pro, in ~5 minutes.

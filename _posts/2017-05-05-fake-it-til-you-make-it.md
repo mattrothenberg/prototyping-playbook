@@ -3,6 +3,7 @@ layout: post
 title:  "Fake it 'til you Make it"
 date:   2017-05-05 16:23:10 -0400
 permalink: 'fake-it-til-you-make-it'
+categories: ['Vanilla JS', 'Vue', 'React']
 ---
 
 This is _not_ an essay on the merit (or lack thereof) of using fake data in your prototype. Instead, this play gives you the tools you need to elevate your game from Lorem Ipsum to data that at least _resembles_ what will eventually go in the interface you're building
