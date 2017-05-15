@@ -382,4 +382,44 @@ Vue.component('photo-preview', {
 {% endprism %}
 
 ## Step 5: Implement the Back Button
+<p data-height="700" data-theme-id="0" data-slug-hash="ZKRpzV" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 5: Back Button [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/ZKRpzV/">Step 5: Back Button [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
 That last feature was a doozy. Let's build something simpler this time around, say, a back button that removes your uploaded photo and takes you back to the initial, empty state.
+
+In our `<app-header>` component, let's add an `@click` directive to the button that contains the "Back" icon.
+
+{% prism markup %}
+<button @click="goBack">
+  <i class="material-icons">keyboard_arrow_left</i>
+</button>
+{% endprism %}
+
+And let's implement the `goBack` method that gets called when our button is pressed.
+
+{% prism js %}
+// Inside <app-header>
+methods: {
+  goBack: function () {
+    this.$emit('go-back')
+  }
+}
+{% endprism %}
+
+Whenever we emit an event, we need to define a corresponding method on our parent Vue instance to handle it. In this case, we'll set the photo string back to an empty one, and our active filter index to zero.
+
+{% prism js  %}
+// Inside the parent Vue instance
+methods: {
+  resetApp: function () {
+    this.photo = ''
+    this.activeFilterIndex = 0
+  }
+}
+{% endprism %}
+
+To finalize this coordination, let's register the `go-back` event by using `v-on` directly in the template where `<app-header>` is used.
+
+{% prism markup %}
+<app-header v-on:go-back="resetApp"></app-header>
+{% endprism %}
