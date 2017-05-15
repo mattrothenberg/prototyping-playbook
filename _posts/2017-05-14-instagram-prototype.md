@@ -6,7 +6,7 @@ permalink: 'instagram-prototype'
 categories: ['Vue']
 ---
 
-To those who claim you can't prototype mobile UIs with Javascript, I raise you the following tutorial. In this play, we'll use Vue JS to re-create the filter UX from Instagram's mobile app.
+To those who claim you can't prototype mobile UIs with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter.
 
 ## Scenario
 You're an enterprising front-end developer convinced that the sky is the limit when it comes to prototyping with HTML, CSS, and Javascript. You tell your friends that you can prototype the "Apply Filter" workflow from Instagram's mobile app in under an hour. Go.
@@ -171,3 +171,36 @@ computed: {
   }
 }
 {% endprism %}
+
+## Step 3: Componentization
+
+<p data-height="700" data-theme-id="0" data-slug-hash="wdXMpx" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 3: Make it Prettier [Instagram Prototype]" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/wdXMpx/">Step 3: Make it Prettier [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+Vue encourages us to pull out components where possible. Looking at the finished product, I see a few different components:
+
+- A **header** with the Instagram logo, "Back" and "Next" buttons.
+- A **preview of our uploaded photo (and applied filter)**
+  - Takes `photo` as a prop
+- A **scrollable list of filters**
+  - Takes `photo` as a prop
+
+![The Final Product]({{ site.baseurl }}/assets/img/posts/component-breakdown.png){: .w-100.w-50-l.db.center }
+
+Let's update our markup and Javascript accordingly. I'll omit the Javascript components from the tutorial, since they don't have any state (yet) and simply render HTML. Note, though, that we're passing down the `photo` to both the `<photo-preview>` and `<filter-list>` components.
+
+{% prism markup %}
+<main class="flex flex-column h-100" v-if="photoUploaded">
+  <app-header></app-header>
+  <photo-preview :photo="photo"></photo-preview>
+  <filter-list :photo="photo"></filter-list>
+</main>
+{% endprism %}
+
+## Step 4: Implement the Filter List Carousel
+
+- Pull in Flickity via CDN
+- Pull in CSSGram via CDN
+- Gather all our filters as defined in CSSGram
+
+https://codepen.io/mattrothenberg/pen/bWKeNe?editors=1011
