@@ -4,14 +4,11 @@
 @import 'colors';
 @import 'codehighlighting';
 
-
-
 ::selection {
   @extend .bg-washed-red;
 }
 
-
-@include scrollbar(.20em, $red);
+@include scrollbar(.35em, $red);
 
 body {
   @extend .sans-serif;
