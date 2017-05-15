@@ -8,7 +8,7 @@ categories: ['Vue', 'Long Form']
 
 To those who claim you can't prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter.
 
-**Warning: this is a long-form tutorial, so feel free to tackle it one step at a time.**
+**Warning: this is a long-form tutorial, so feel free to tackle it at your own pace.**
 
 ***
 
@@ -205,7 +205,7 @@ Nice work. Before moving on, I encourage you to repeat this step until you're co
 
 ## Step 3: Componentization
 
-<p data-height="700" data-theme-id="0" data-slug-hash="wdXMpx" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 3: Make it Prettier [Instagram Prototype]" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/wdXMpx/">Step 3: Make it Prettier [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="700" data-theme-id="0" data-slug-hash="wdXMpx" data-default-tab="result" data-user="mattrothenberg" data-preview="true" data-embed-version="2" data-pen-title="Step 3: Make it Prettier [Instagram Prototype]" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/wdXMpx/">Step 3: Make it Prettier [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
 Vue encourages us to pull out components as much as possible. Looking at the mockup, I see a few different components.
