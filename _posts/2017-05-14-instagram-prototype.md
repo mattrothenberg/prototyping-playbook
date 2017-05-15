@@ -6,25 +6,28 @@ permalink: 'instagram-prototype'
 categories: ['Vue']
 ---
 
-To those who claim you can't prototype mobile UIs with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter. This is a long-form tutorial, so feel free to tackle it one step at a time!
+To those who claim you can't prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter.
+
+**Warning: this is a long-form tutorial, so feel free to tackle it one step at a time.**
+
+***
 
 ## Scenario
-You're an enterprising front-end developer convinced that the sky is the limit when it comes to prototyping with HTML, CSS, and Javascript. You tell your friends that you can prototype the "Apply Filter" workflow from Instagram's mobile app in under an hour. Go.
+You're convinced that the sky is the limit when it comes to prototyping with HTML, CSS, and Javascript. You tell your friends that you can prototype the "Apply Filter" workflow from Instagram's mobile app in under an hour. Go.
 
 ## Mockup
 <div style="width: 100%; height: 0px; position: relative; padding-bottom: 55.625%;"><iframe src="https://streamable.com/s/gayvr/hpvrww" frameborder="0" width="100%" height="100%" allowfullscreen style="width: 100%; height: 100%; position: absolute;"></iframe></div>
 
-
 ## Rundown
 
-The best advice I can give you (or anyone else who's looking to become a stronger prototyper) is **don't re-invent the wheel.** As this advice relates to the task at hand, the first thing we should do is identify libraries and plugins that give us some of the functionality from the video above. My gut tells me there are four particulary tricky bits:
+The best advice I can give you (or anyone else who's looking to become a stronger prototyper) is **don't re-invent the wheel.** As this advice relates to the task at hand, the first thing we should do is identify libraries and plugins that give us some of the functionality from the mockup above. My gut tells me there will be four particularly tricky features:
 
-- The touch-enabled carousel of photo filters
+- The touch-enabled, draggable carousel of photo filters
 - The photo filters themselves
-- The touch-enabled slider to adjust the filter strength
-- The fade/slide transitions through the workflow
+- The touch-enabled slider to adjust the strength of the chosen filter
+- The fade transitions throughout the workflow
 
-A quick Google search for a library or plugin far outweighs a futile attempt to hand-roll this functionality ourselves. I've identified the following libraries that will help us with today's task.
+Seriously. A quick Google search for a library or plugin _far_ outweighs a futile attempt to hand-roll this functionality yourself. I've identified the following libraries that will help us with today's task.
 
 - [Flickity](https://flickity.metafizzy.co/){:target="_blank"} – a library for creating "touch, responsive, flickable carousels"
 - [CSSGram](https://una.im/CSSgram/){:target="_blank"} – a library for recreating Instagram filters with CSS filters and blend modes
@@ -38,7 +41,8 @@ Let's get to coding.
 <p data-height="547" data-theme-id="0" data-slug-hash="xdzwQo" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 1: Scaffold Vue Instance [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/xdzwQo/">Step 1: Scaffold Vue Instance [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-As mentioned above, we'll be using Vue to build our prototype. By now, you should be a pro at scaffolding Vue instances. As a refresher, let's add the following combination of markup and Javascript.
+As mentioned above, we'll be using Vue JS to build the prototype. By now, you should be a pro at scaffolding Vue instances. As a refresher,
+let's add the following combination of markup and Javascript to the mix.
 
 {% prism markup %}
 {% raw %}
@@ -59,6 +63,8 @@ new Vue({
 })
 {% endprism %}
 
+Believe it or not, the code above will serve as the foundation for the rest of tutorial. We'll soon begin to see some magical coordination between our parent Vue instance, and the components we build along the way.
+
 ## Step 2: Implement the Photo Upload Feature
 
 <p data-height="482" data-theme-id="0" data-slug-hash="XRYmLQ" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 2: Implement Photo Upload [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/XRYmLQ/">Step 2: Implement Photo Upload [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
@@ -66,14 +72,22 @@ new Vue({
 
 ### Game Plan
 
-There's quite a bit going here, so let's break down this feature into steps:
+There's a lot going on here, so let's try to break down the feature into steps:
 
-- User clicks an empty state on the screen
-- User is prompted to select a photo
+- User **clicks** an empty state **component**
+- User is prompted to select a photo via the **native file dialog**
 - User selects a photo
-- User sees the selected photo instead of the empty state
+- User then sees the selected photo **instead** of the empty state
 
-We'll start by creating a component called `<empty-state>`. This component will render a box with a dashed border (our "empty state") as well as a hidden file `input`.
+The reason why I put some of the above words in **bold** is because they should trigger associations in your Vue JS brain.
+- **Click**: we're probably going to use the `@click` directive
+- **Component**: we're probably going to encapuslate markup and state into a `<component>`
+- **Native File Dialog**: we're probably going to need an `<input type="file"/>`
+- **Instead**: we're probably going to need to conditionally render some content with `v-if`
+
+Let's kick things off by creating a component called `<empty-state>`. This component is responsible for rendering a box with a dashed border–our "empty state"–as well as a hidden `<input type="file"`>.
+
+Why a hidden input? It is notoriously difficult to style HTML5 file inputs. One workaround involves putting an input in the DOM and hiding it with CSS. In order for the browser to open the native file dialog, this input must receive a click event. How it gets clicked, and how the client then handles what the user uploads, though, is totally up to us.
 
 {% prism markup %}
 <div
@@ -99,41 +113,48 @@ We'll start by creating a component called `<empty-state>`. This component will 
 
 ### Event Handling
 
-For clarification, it is notoriously difficult to style HTML5 file inputs. One workaround involves putting an input in the DOM and hiding it with CSS. In order for the browser to open the native file picker, this input must be clicked. How it gets clicked, and how the client handles what the user uploads, though, is totally up to us.
-
-And so, we can add an `@click` handler to the outermost div which calls a function that triggers said "click." In order to handle the user's photo selection, we can add an `@change` handler to the file input itself. This handler triggers a function that encodes the selected photo as a base64 string and emits that information to the parent Vue instance.
+We don't want users to _see_ the vanilla file input; instead, we want the entire empty state to be clickable. So, we can add an `@click` directive to the outermost div in our `<empty-state>` component. The function that we provide to this directive, `triggerFilePicker()`, is just responsible for sending a click event to the hidden file input so that the native file picker pops up.
 
 {% prism js %}
-Vue.component('empty-state', {
-  template: `<div
-    @click="triggerFilePicker"
-    class="empty-state absolute tc top-1 left-1 right-1 bottom-1 flex items-center justify-center pa3 ba">
-    <input @change="handlePhotoUpload" class="hide" ref="upload" type="file">
-    <h2 class="fw5 mv0 black-30">Click to upload a photo</h2>
-  </div>`,
-  methods: {
-    handlePhotoUpload: function (e) {
-      let self = this
-      let reader = new FileReader()
-      reader.onload = function(e) {
-        self.$emit('photo-uploaded', e.target.result)
-      }
-      reader.readAsDataURL(e.target.files[0])
-    },
-    triggerFilePicker: function () {
-      this.$refs.upload.click()
-    }
+methods: {
+  // 'refs' is an easy way to keep track of
+  // different elements in your component
+  triggerFilePicker: function () {
+    this.$refs.upload.click()
   }
-})
+}
 {% endprism %}
 
-### Child-Parent Communication
+Getting the native file picker to appear is one thing. Handling the user's photo selection is another. To accomplish that task, we can add an `@change` directive to the file input itself. The function that we provide to this directive is called after a user has selected photo from their computer. In our case, we want to encode the selected photo as a base64 string, and immediately `$emit` that information back to the parent Vue instance (since it is responsible for all things "state management" in our prototype).
 
-In the parent Vue instance, we need to define how we would like to handle events that are emitted by child components. We'll modify the instance by adding a `photo` key to its data field (initialized as an empty string), and defining a method that sets the value of the `photo` key to the encoded base64 string.
+In our case, we want to **$emit** that information back to our parent Vue instance, who is responsible for responsible for all-things-state-management in our prototype.
 
 {% prism js %}
-new Vue({
-  el: '#instagram',
+methods: {
+  handlePhotoUpload: function (e) {
+    let self = this
+    let reader = new FileReader()
+    reader.onload = function(e) {
+      // phone home with the base64 string
+      self.$emit('photo-uploaded', e.target.result)
+    }
+    reader.readAsDataURL(e.target.files[0])
+  }
+}
+{% endprism %}
+
+### Child Component ↔️ Parent Instance Communication
+
+Any time we emit an event from a child component, we **must** do two more things.
+
+  1. Define a method on our Vue instance that is responsible for handling the emitted event
+  2. Pass that method down to the child component using the `v-on` directive
+
+As mentioned above, the `photo-uploaded` event is responsible for emitting the base64 encoded photo string back to the parent instance. Currently, though, our parent instance doesn't have any state. Let's add a `photo` key to the instance's data field, initialize it as an empty string, and define a method `setPhoto` that sets the emitted base64 string to this property.
+
+
+{% prism js %}
+// etcetera
   data: {
     photo: '',
   },
@@ -141,28 +162,33 @@ new Vue({
     setPhoto: function (photoString) {
       this.photo = photoString
     }
-    // We'll pass this method ^^ to the empty-state component
   }
-})
+// etcetera
 {% endprism %}
 
-When we place the `<empty-state>` component into our markup, we can use the `v-on` directive to ensure that when the `photo-uploaded` event is emitted, the newly defined `setPhoto` function is called.
+Now, when we place the `<empty-state>` component into our markup, we can use the `v-on` directive to map the name of emitted event to the appropriate handler method from our parent instance.
 
 {% prism markup %}
+<!-- we emit 'photo-uploaded' -->
+<!-- we want 'setPhoto' to be called -->
 <empty-state v-on:photo-uploaded="setPhoto"></empty-state>
 {% endprism %}
 
 ### Conditional Rendering
 
-Finally, we want to replace the empty state with the uploaded photo. Vue offers a handful of template helpers (v-if, v-show, v-else , etc) to help you show and hide content conditionally. When the JavaScript expression passed to this directive evaluates to true, the element is rendered, and vice-versa.
+Finally, we want to hide the empty state once a user has uploaded a photo. Vue offers a handful of template directives (v-if, v-show, v-else) to help you show and hide content conditionally. Each directive takes a Javascript expression that gets evaluated and renders the attached content accordingly.
 
 {% prism markup %}
-<empty-state v-if="noPhotoUploaded" v-on:photo-uploaded="setPhoto">
+<empty-state
+  v-if="noPhotoUploaded"
+  v-on:photo-uploaded="setPhoto">
 </empty-state>
-<img :src="photo" v-if="photoUploaded" alt="Uploaded Photo"/>
+<img
+  v-if="photoUploaded"
+  :src="photo"/>
 {% endprism %}
 
-All we have to do is define the two expressions, `noPhotoUploaded` and `photoUploaded` as computed properties on our parent Vue instance.
+Those Javascript expressions, `noPhotoUploaded` and `photoUploaded`, don't exist yet. Let's define them as computed properties on our parent Vue instance, since their values are _functions_ of the `photo` attribute on our instance's data model.
 
 {% prism js %}
 computed: {
@@ -174,6 +200,8 @@ computed: {
   }
 }
 {% endprism %}
+
+Nice work. Before moving on, I encourage you to repeat this step until you're comfortable with coordinating events between child components and the parent Vue instance. This maneuver plays an integral part in the following steps. If you still don't understand this concept, feel free to reach out on Twitter ([@mattrothenberg](https://twitter.com/@mattrothenberg){:target="_blank"}) or via GitHub!
 
 ## Step 3: Componentization
 
@@ -621,7 +649,7 @@ methods: {
 {% endprism %}
 
 
-## Step 7: Add Some Transitions ("Make it Pop")
+## Step 7: The Final Act – "Make it Pop" with Transitions
 
 We're on the home stretch. The prototype "works," but we can add transitions here and there to make things a bit smoother. Let's pull in our final third-party library, **Animate.css**, via CDN.
 
