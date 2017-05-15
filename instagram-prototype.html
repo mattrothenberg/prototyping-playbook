@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototyping Instagram&#39;s Filter UX</title>
+  <meta name="description" content="To those who claim you can’t prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we’ll use Vue JS t...">
+  <meta property="og:description" content="To those who claim you can’t prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we’ll use Vue JS t...">
+  <meta property="og:image" content="/prototyping-playbook/assets/img/playbook-og.png" />
+  <script type="text/javascript">
+  !function(e,t,n,a,c,l,m,o,d,f,h,i){c[l]&&(d=e.createElement(t),d[n]=c[l],e[a]("head")[0].appendChild(d),e.documentElement.className+=" wf-cached"),function s(){for(d=e[a](t),f="",h=0;h<d.length;h++)i=d[h][n],i.match(m)&&(f+=i);f&&(c[l]="/**/"+f),setTimeout(s,o+=o)}()}(document,"style","innerHTML","getElementsByTagName",localStorage,"tk",/^@font|^\.tk-/,100);
+</script>
+
+  <script>
+  (function(d) {
+    var config = {
+      kitId: 'pyj3iso',
+      scriptTimeout: 3000,
+      async: false
+    },
+    h=d.documentElement,t=setTimeout(function(){h.className=h.className.replace(/\bwf-loading\b/g,"")+" wf-inactive";},config.scriptTimeout),tk=d.createElement("script"),f=false,s=d.getElementsByTagName("script")[0],a;h.className+=" wf-loading";tk.src='https://use.typekit.net/'+config.kitId+'.js';tk.async=true;tk.onload=tk.onreadystatechange=function(){a=this.readyState;if(f||a&&a!="complete"&&a!="loaded")return;f=true;clearTimeout(t);try{Typekit.load(config)}catch(e){}};s.parentNode.insertBefore(tk,s)
+  })(document);
+</script>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/prototyping-playbook/favicon.ico">
+  <link rel="stylesheet" href="/prototyping-playbook/assets/main.css">
+  <link rel="canonical" href="/prototyping-playbook/instagram-prototype">
+  <link rel="alternate" type="application/rss+xml" title="Prototyping Playbook" href="/prototyping-playbook/feed.xml">
+
+  
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-98584881-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+  
+</head>
+
+  <body>
+    <nav class="pv3 pt5-l relative">
+  <div class="mw8 center ph3 ph5-l flex items-center justify-between">
+    <a class="link color-inherit hover-red" href="/prototyping-playbook/">
+      <figure class="logo ma0">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M55.3,49.3c17.7,0,32-14.4,32-32v-3.7l4.9,4.9c1.3,1.3,3.7,1.3,5,0c0.7-0.7,1-1.6,1-2.5c0-0.9-0.4-1.8-1-2.5l-11-11  c-1.3-1.3-3.5-1.3-4.9-0.1l-11.8,11c-0.7,0.6-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,0.9,2.5c1.3,1.4,3.6,1.5,5,0.2l6-5.5v4.3  c0,13.8-11.2,25-25,25H43.4C27,42.3,13,55,11.5,71.3l0,0.4l-0.4,0.1c-5.7,1.7-9.6,6.9-9.6,12.8c0,7.4,6,13.4,13.4,13.4  c7.4,0,13.4-6,13.4-13.4c0-5.7-3.7-10.8-9.2-12.7l-0.5-0.2l0.1-0.5c1.5-12.5,12.1-22,24.7-22H55.3z M21.3,84.7  c0,3.5-2.9,6.4-6.4,6.4c-3.5,0-6.4-2.9-6.4-6.4c0-3.5,2.9-6.4,6.4-6.4C18.4,78.3,21.3,81.2,21.3,84.7z"/><path d="M76.6,85.7l-5.7-5.4l5.7-5.4c0.7-0.7,1.1-1.5,1.1-2.5s-0.3-1.8-1-2.5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6  c-1.4-1.3-3.7-1.3-5,0.1c-0.7,0.7-1,1.6-1,2.5c0,0.9,0.4,1.8,1.1,2.5l5.7,5.4L55,85.7c-1.4,1.3-1.5,3.6-0.1,5c1.3,1.4,3.6,1.4,5,0.1  l5.9-5.6l5.9,5.6c1.3,1.3,3.7,1.2,5-0.1C78,89.3,78,87.1,76.6,85.7z"/><path d="M41.9,23.4L36.3,18l5.7-5.4c1.4-1.3,1.5-3.6,0.1-5c-1.3-1.4-3.6-1.4-5-0.1l-5.9,5.6l-5.9-5.6c-1.4-1.3-3.7-1.3-5,0.1  c-1.3,1.4-1.3,3.6,0.1,5L26,18l-5.7,5.4c-0.7,0.7-1.1,1.5-1.1,2.5c0,0.9,0.3,1.8,1,2.5c1.3,1.4,3.6,1.4,5,0.1l5.9-5.6l5.9,5.6  c1.3,1.3,3.7,1.2,5-0.1c0.7-0.7,1-1.6,1-2.5C43,24.9,42.6,24.1,41.9,23.4z"/></svg>
+
+      </figure>
+    </a>
+    <a class="link red fw6 flex items-center" href="https://github.com/mattrothenberg/prototyping-playbook" target="_blank">
+      <span class="h1 w1 mr2">
+        <svg class="icon-octocat" aria-hidden="true" version="1.1" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+</svg>
+
+      </span>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+    <main class="mw8 center pa3 pa5-l" aria-label="Content">
+      <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="mb4 mb5-l" itemprop="name headline">
+    
+    <h2 class="mt0 mb1 fw9 ttu f6 tracked-1 red o-70">12 May 2017</h2>
+    <h1 class="f3 mt0 mb2 lh-title fw6 red">
+      Prototyping Instagram&#39;s Filter UX
+    </h1>
+    <ul class="list mt3 mb0 pl0">
+      
+        <li class="dib ttu dark-gray f7 fw6 tracked-1 bg-washed-red red pv1 ph2 mr2">Vue</li>
+      
+        <li class="dib ttu dark-gray f7 fw6 tracked-1 bg-washed-red red pv1 ph2 mr2">Long Form</li>
+      
+    </ul>
+  </header>
+
+  <div class="lh-copy f4 measure-wide center serif" itemprop="articleBody">
+    <p>To those who claim you can’t prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we’ll use Vue JS to re-create a workflow from Instagram’s mobile app: uploading a photo and applying a filter.</p>
+
+<p><strong>Warning: this is a long-form tutorial, so feel free to tackle it one step at a time.</strong></p>
+
+<hr />
+
+<h2 id="scenario">Scenario</h2>
+<p>You’re convinced that the sky is the limit when it comes to prototyping with HTML, CSS, and Javascript. You tell your friends that you can prototype the “Apply Filter” workflow from Instagram’s mobile app in under an hour. Go.</p>
+
+<h2 id="mockup">Mockup</h2>
+<div style="width: 100%; height: 0px; position: relative; padding-bottom: 55.625%;"><iframe src="https://streamable.com/s/gayvr/hpvrww" frameborder="0" width="100%" height="100%" allowfullscreen="" style="width: 100%; height: 100%; position: absolute;"></iframe></div>
+
+<h2 id="rundown">Rundown</h2>
+
+<p>The best advice I can give you (or anyone else who’s looking to become a stronger prototyper) is <strong>don’t re-invent the wheel.</strong> As this advice relates to the task at hand, the first thing we should do is identify libraries and plugins that give us some of the functionality from the mockup above. My gut tells me there will be four particularly tricky features:</p>
+
+<ul>
+  <li>The touch-enabled, draggable carousel of photo filters</li>
+  <li>The photo filters themselves</li>
+  <li>The touch-enabled slider to adjust the strength of the chosen filter</li>
+  <li>The fade transitions throughout the workflow</li>
+</ul>
+
+<p>Seriously. A quick Google search for a library or plugin <em>far</em> outweighs a futile attempt to hand-roll this functionality yourself. I’ve identified the following libraries that will help us with today’s task.</p>
+
+<ul>
+  <li><a href="https://flickity.metafizzy.co/" target="_blank">Flickity</a> – a library for creating “touch, responsive, flickable carousels”</li>
+  <li><a href="https://una.im/CSSgram/" target="_blank">CSSGram</a> – a library for recreating Instagram filters with CSS filters and blend modes</li>
+  <li><a href="https://refreshless.com/nouislider/" target="_blank">noUISlider</a> – a lightweight JavaScript range slider</li>
+  <li><a href="https://daneden.github.io/animate.css/" target="_blank">Animate.css</a> – Just-add-water CSS animations</li>
+</ul>
+
+<p>Let’s get to coding.</p>
+
+<h2 id="step-1-scaffold-the-project">Step 1: Scaffold the Project</h2>
+
+<p data-height="547" data-theme-id="0" data-slug-hash="xdzwQo" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 1: Scaffold Vue Instance [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/xdzwQo/">Step 1: Scaffold Vue Instance [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>As mentioned above, we’ll be using Vue JS to build the prototype. By now, you should be a pro at scaffolding Vue instances. As a refresher,
+let’s add the following combination of markup and Javascript to the mix.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;div class=&quot;wrap vh-100 overflow-hidden&quot; id=&quot;instagram&quot;&gt;
+  &lt;div class=&quot;phone relative bg-white w-100 h-100&quot;&gt;
+    {{ testMessage }}
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<div>
+  <pre data-line=""><code class="language-js">new Vue({
+  el: &#39;#instagram&#39;,
+  data: {
+    testMessage: &#39;Nothing to see here...&#39;
+  }
+})</code></pre>
+</div>
+
+<p>Believe it or not, the code above will serve as the foundation for the rest of tutorial. We’ll soon begin to see some magical coordination between our parent Vue instance, and the components we build along the way.</p>
+
+<h2 id="step-2-implement-the-photo-upload-feature">Step 2: Implement the Photo Upload Feature</h2>
+
+<p data-height="482" data-theme-id="0" data-slug-hash="XRYmLQ" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 2: Implement Photo Upload [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/XRYmLQ/">Step 2: Implement Photo Upload [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h3 id="game-plan">Game Plan</h3>
+
+<p>There’s a lot going on here, so let’s try to break down the feature into steps:</p>
+
+<ul>
+  <li>User <strong>clicks</strong> an empty state <strong>component</strong></li>
+  <li>User is prompted to select a photo via the <strong>native file dialog</strong></li>
+  <li>User selects a photo</li>
+  <li>User then sees the selected photo <strong>instead</strong> of the empty state</li>
+</ul>
+
+<p>The reason why I put some of the above words in <strong>bold</strong> is because they should trigger associations in your Vue JS brain.</p>
+<ul>
+  <li><strong>Click</strong>: we’re probably going to use the <code class="highlighter-rouge">@click</code> directive</li>
+  <li><strong>Component</strong>: we’re probably going to encapuslate markup and state into a <code class="highlighter-rouge">&lt;component&gt;</code></li>
+  <li><strong>Native File Dialog</strong>: we’re probably going to need an <code class="highlighter-rouge">&lt;input type="file"/&gt;</code></li>
+  <li><strong>Instead</strong>: we’re probably going to need to conditionally render some content with <code class="highlighter-rouge">v-if</code></li>
+</ul>
+
+<p>Let’s kick things off by creating a component called <code class="highlighter-rouge">&lt;empty-state&gt;</code>. This component is responsible for rendering a box with a dashed border–our “empty state”–as well as a hidden <code class="highlighter-rouge">&lt;input type="file"</code>&gt;.</p>
+
+<p>Why a hidden input? It is notoriously difficult to style HTML5 file inputs. One workaround involves putting an input in the DOM and hiding it with CSS. In order for the browser to open the native file dialog, this input must receive a click event. How it gets clicked, and how the client then handles what the user uploads, though, is totally up to us.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;div
+  class=&quot;...&quot;
+  @click=&quot;triggerFilePicker&quot;&gt;
+  &lt;input
+    ref=&quot;upload&quot;
+    @change=&quot;handlePhotoUpload&quot;
+    class=&quot;hide&quot;  type=&quot;file&quot;&gt;
+  &lt;h2 class=&quot;fw5 mv0 black-30&quot;&gt;Click to upload a photo&lt;/h2&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<div>
+  <pre data-line=""><code class="language-css">.hide {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}</code></pre>
+</div>
+
+<h3 id="event-handling">Event Handling</h3>
+
+<p>We don’t want users to <em>see</em> the vanilla file input; instead, we want the entire empty state to be clickable. So, we can add an <code class="highlighter-rouge">@click</code> directive to the outermost div in our <code class="highlighter-rouge">&lt;empty-state&gt;</code> component. The function that we provide to this directive, <code class="highlighter-rouge">triggerFilePicker()</code>, is just responsible for sending a click event to the hidden file input so that the native file picker pops up.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">methods: {
+  // &#39;refs&#39; is an easy way to keep track of
+  // different elements in your component
+  triggerFilePicker: function () {
+    this.$refs.upload.click()
+  }
+}</code></pre>
+</div>
+
+<p>Getting the native file picker to appear is one thing. Handling the user’s photo selection is another. To accomplish that task, we can add an <code class="highlighter-rouge">@change</code> directive to the file input itself. The function that we provide to this directive is called after a user has selected photo from their computer. In our case, we want to encode the selected photo as a base64 string, and immediately <code class="highlighter-rouge">$emit</code> that information back to the parent Vue instance (since it is responsible for all things “state management” in our prototype).</p>
+
+<p>In our case, we want to <strong>$emit</strong> that information back to our parent Vue instance, who is responsible for responsible for all-things-state-management in our prototype.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">methods: {
+  handlePhotoUpload: function (e) {
+    let self = this
+    let reader = new FileReader()
+    reader.onload = function(e) {
+      // phone home with the base64 string
+      self.$emit(&#39;photo-uploaded&#39;, e.target.result)
+    }
+    reader.readAsDataURL(e.target.files[0])
+  }
+}</code></pre>
+</div>
+
+<h3 id="child-component-️-parent-instance-communication">Child Component ↔️ Parent Instance Communication</h3>
+
+<p>Any time we emit an event from a child component, we <strong>must</strong> do two more things.</p>
+
+<ol>
+  <li>Define a method on our Vue instance that is responsible for handling the emitted event</li>
+  <li>Pass that method down to the child component using the <code class="highlighter-rouge">v-on</code> directive</li>
+</ol>
+
+<p>As mentioned above, the <code class="highlighter-rouge">photo-uploaded</code> event is responsible for emitting the base64 encoded photo string back to the parent instance. Currently, though, our parent instance doesn’t have any state. Let’s add a <code class="highlighter-rouge">photo</code> key to the instance’s data field, initialize it as an empty string, and define a method <code class="highlighter-rouge">setPhoto</code> that sets the emitted base64 string to this property.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// etcetera
+  data: {
+    photo: &#39;&#39;,
+  },
+  methods: {
+    setPhoto: function (photoString) {
+      this.photo = photoString
+    }
+  }
+// etcetera</code></pre>
+</div>
+
+<p>Now, when we place the <code class="highlighter-rouge">&lt;empty-state&gt;</code> component into our markup, we can use the <code class="highlighter-rouge">v-on</code> directive to map the name of emitted event to the appropriate handler method from our parent instance.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;!-- we emit &#39;photo-uploaded&#39; --&gt;
+&lt;!-- we want &#39;setPhoto&#39; to be called --&gt;
+&lt;empty-state v-on:photo-uploaded=&quot;setPhoto&quot;&gt;&lt;/empty-state&gt;</code></pre>
+</div>
+
+<h3 id="conditional-rendering">Conditional Rendering</h3>
+
+<p>Finally, we want to hide the empty state once a user has uploaded a photo. Vue offers a handful of template directives (v-if, v-show, v-else) to help you show and hide content conditionally. Each directive takes a Javascript expression that gets evaluated and renders the attached content accordingly.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;empty-state
+  v-if=&quot;noPhotoUploaded&quot;
+  v-on:photo-uploaded=&quot;setPhoto&quot;&gt;
+&lt;/empty-state&gt;
+&lt;img
+  v-if=&quot;photoUploaded&quot;
+  :src=&quot;photo&quot;/&gt;</code></pre>
+</div>
+
+<p>Those Javascript expressions, <code class="highlighter-rouge">noPhotoUploaded</code> and <code class="highlighter-rouge">photoUploaded</code>, don’t exist yet. Let’s define them as computed properties on our parent Vue instance, since their values are <em>functions</em> of the <code class="highlighter-rouge">photo</code> attribute on our instance’s data model.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">computed: {
+  noPhotoUploaded: function () {
+    return this.photo.length === 0
+  },
+  photoUploaded: function () {
+    return this.photo.length &gt; 0
+  }
+}</code></pre>
+</div>
+
+<p>Nice work. Before moving on, I encourage you to repeat this step until you’re comfortable with coordinating events between child components and the parent Vue instance. This maneuver plays an integral part in the following steps. If you still don’t understand this concept, feel free to reach out on Twitter (<a href="https://twitter.com/@mattrothenberg" target="_blank">@mattrothenberg</a>) or via GitHub!</p>
+
+<h2 id="step-3-componentization">Step 3: Componentization</h2>
+
+<p data-height="700" data-theme-id="0" data-slug-hash="wdXMpx" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 3: Make it Prettier [Instagram Prototype]" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/wdXMpx/">Step 3: Make it Prettier [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>Vue encourages us to pull out components as much as possible. Looking at the mockup, I see a few different components.</p>
+
+<ul>
+  <li>A <strong>header</strong> with the Instagram logo, “Back” and “Next” buttons</li>
+  <li>A <strong>preview</strong> of our upload photo and the applied filter</li>
+  <li>A scrollable <strong>list of filters</strong></li>
+  <li>A <strong>slider</strong> to adjust the strength of the applied filters</li>
+</ul>
+
+<p>Here’s a rough diagram for visual learners:</p>
+
+<p><img src="/prototyping-playbook/assets/img/posts/component-breakdown.png" alt="The Final Product" class="w-100 w-50-l db center" /></p>
+
+<p>And so, our markup should look something like the following. Note that we’re passing <code class="highlighter-rouge">photo</code> as a prop to both the <code class="highlighter-rouge">&lt;photo-preview&gt;</code> and <code class="highlighter-rouge">&lt;filter-list&gt;</code> components. This should make sense, considering both components need to have an awareness of this state in order to render a preview of the uploaded photo.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;main class=&quot;flex flex-column h-100&quot; v-if=&quot;photoUploaded&quot;&gt;
+  &lt;app-header&gt;&lt;/app-header&gt;
+  &lt;photo-preview :photo=&quot;photo&quot;&gt;&lt;/photo-preview&gt;
+  &lt;filter-list :photo=&quot;photo&quot;&gt;&lt;/filter-list&gt;
+&lt;/main&gt;</code></pre>
+</div>
+
+<p>I’m going to omit the Javascript implementation of these components, since they are solely responsible (at the moment) for taking a prop and rendering markup accordingly.</p>
+
+<h2 id="step-4-implement-the-filter-list-carousel">Step 4: Implement the Filter List Carousel</h2>
+<p data-height="700" data-theme-id="0" data-slug-hash="bWKeNe" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 4: Filter List Carousel [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/bWKeNe/">Step 4: Filter List Carousel [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<h3 id="grab-the-filters">Grab The Filters</h3>
+
+<p>First things first, let’s pull in two of our third-party libraries, Flickity and CSSGram, via CDN.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/flickity/2.0.5/flickity.pkgd.min.js&quot;&gt;&lt;/script&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css&quot;/&gt;</code></pre>
+</div>
+
+<p>CSSgram is a “library for editing images with Instagram-like filters directly using CSS. [It works by] applying color and/or gradient overlays via various blending techniques to mimic filter effects.”<sup id="fnref:cssgram"><a href="#fn:cssgram" class="footnote">1</a></sup></p>
+
+<p>As such, it provides 20+ classes that we can apply to both the <code class="highlighter-rouge">&lt;photo-preview&gt;</code> component, and the thumbnails inside of our <code class="highlighter-rouge">&lt;filter-list&gt;</code> carousel.</p>
+
+<p>Since our prototype will make use of both the display name <em>and</em> class name of each filter, it will be helpful to build a data structure that we can populate with this information. Let’s write a function that generates an Array of <code class="highlighter-rouge">filter</code> objects, setting the display name, class name, and default strength (of 100) on each. In a later step, it will become clear why we generate this list with a function, instead of hard-coding it on our parent instance’s data model.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">const generateFilters = () =&gt; {
+  return [
+   { displayName: &#39;1977&#39;, className: &#39;_1977&#39;, strength: 100 },
+   { displayName: &#39;Aden&#39;, className: &#39;aden&#39;, strength: 100 },
+   { displayName: &#39;Brannan&#39;, className: &#39;brannan&#39;, strength: 100 }
+   // etcetera
+ ]
+}
+
+new Vue({
+  el: &#39;#instagram&#39;,
+  data: {
+    photo: &#39;&#39;,
+    filters: generateFilters()
+  }
+  // etcetera
+})</code></pre>
+</div>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;filter-list
+  :filters=&quot;filters&quot;
+  :photo=&quot;photo&quot;&gt;
+&lt;/filter-list&gt;</code></pre>
+</div>
+
+<h3 id="build-the-carousel">Build The Carousel</h3>
+
+<p>Let’s update our <code class="highlighter-rouge">&lt;filter-list&gt;</code> component so that it dynamically renders a carousel of Instagram filters. There are two steps to this dance.</p>
+
+<ul>
+  <li>Use the <code class="highlighter-rouge">v-for</code> directive to iterate over the list of <code class="highlighter-rouge">filters</code> that we received as a prop. We can pluck the <code class="highlighter-rouge">className</code> attribute off each <code class="highlighter-rouge">filter</code> object and apply it to the <code class="highlighter-rouge">filter-preview</code> DIV to create the appearance of a “thumbnail”</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">Vue.component(&#39;filter-list&#39;, {
+  props: [&#39;photo&#39;, &#39;filters&#39;],
+  template: `
+    &lt;div class=&quot;filter-list pa3&quot;&gt;
+      &lt;div class=&quot;tc dib mr3 filter&quot; v-for=&quot;(filter, index) in filters&quot;&gt;
+        &lt;h4 class=&quot;f5 fw5 mt0 mb2&quot;&gt;&lt;/h4&gt;
+      &lt;div v-bind:class=&quot;[filter.className]&quot; class=&quot;filter-preview aspect-ratio aspect-ratio--1x1&quot;&gt;
+        &lt;div class=&quot;aspect-ratio--object cover&quot; v-bind:style=&quot;{backgroundImage: photoAsBackgroundImageUrl}&quot;&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;`,
+  // etcetera
+})</code></pre>
+</div>
+
+<ul>
+  <li>Instantiate the Flickity library once the component is mounted, so that our inline list of filters turns into a touch-enabled carousel</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">Vue.component(&#39;filter-list&#39;, {
+  // stuff above here
+  data: function () {
+    return {
+      flickityInstance: {}
+    }
+  },
+  mounted: function () {
+    this.flickityInstance = new Flickity(this.$el, {
+      cellAlign: &#39;center&#39;,
+      contain: true,
+      initialIndex: 0,
+      pageDots: false,
+      setGallerySize: true,
+      prevNextButtons: false
+    })
+  }
+  // etcetera
+})</code></pre>
+</div>
+
+<p>So far so good! We now have a beautiful carousel of filters. But nothing happens when you tap on one of them.</p>
+
+<p>That’s a sub-optimal user experience. Fortunately, it’s one that can be improved by <strong>writing more code</strong>.</p>
+
+<h2 id="selecting-a-filter">Selecting a Filter</h2>
+
+<p>When a user taps a filter, we want to do two things:</p>
+
+<ol>
+  <li>Scroll that particular filter into the center of the viewport</li>
+  <li>Apply that filter to the <code class="highlighter-rouge">&lt;photo-preview&gt;</code> component so that we can see what the filter actually does to the photo</li>
+</ol>
+
+<p>We can begin by adding an <code class="highlighter-rouge">@click</code> directive to each carousel item inside the <code class="highlighter-rouge">v-for</code> loop. When clicked, we’ll call our component’s <code class="highlighter-rouge">selectFilter</code> function to handle the aforementioned tasks.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;div class=&quot;tc dib mr3 filter&quot;
+    v-for=&quot;(filter, index) in filters&quot;
+    @click=&quot;selectFilter(index)&quot;&gt;
+  &lt;!-- lol implementation details --&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<div>
+  <pre data-line=""><code class="language-js">methods: {
+  selectFilter: function (index) {
+    this.flickityInstance.select(index)
+    this.$emit(&#39;filter-selected&#39;, index)
+  },
+},</code></pre>
+</div>
+
+<p>The first line of our <code class="highlighter-rouge">selectFilter</code> function tells the Flickity library to scroll the element at the given <code class="highlighter-rouge">index</code> into the center of the viewport.</p>
+
+<p>The second line, however, is another example of child-parent communication. In this scenario, we want to tell the parent Vue instance that a user has chosen the filter living at <code class="highlighter-rouge">index</code> on its <code class="highlighter-rouge">filters</code> array. Once equipped with that information, our parent Vue instance can pass the correct filter filter to the <code class="highlighter-rouge">&lt;photo-preview&gt;</code> component, thereby “applying” the filter to our glorious preview image.</p>
+
+<p>Let’s see how we can orchestrate that maneuver.</p>
+
+<p>First, let’s modify our parent Vue instance in a couple of ways.</p>
+
+<ol>
+  <li>Add an <code class="highlighter-rouge">activeFilterIndex</code> property to its data model and set it to zero</li>
+  <li>Add a computed property, <code class="highlighter-rouge">activeFilterClass</code>, so that we can dynamically (and automatically) pass the correct class name to the <code class="highlighter-rouge">&lt;photo-preview&gt;</code> component.</li>
+  <li>Add a method, <code class="highlighter-rouge">setFilter</code>, to handle the event we’ll emit from the <code class="highlighter-rouge">&lt;filter-list&gt;</code> component</li>
+</ol>
+
+<div>
+  <pre data-line=""><code class="language-js">new Vue({
+  el: &#39;#instagram&#39;,
+  data: {
+    activeFilterIndex: 0,
+    photo: &#39;&#39;,
+    filters: generateFilters()
+  },
+  computed: {
+    activeFilterClass: function() {
+      return this.filters[this.activeFilterIndex].className
+    }
+  },
+  methods: {
+    setFilter: function (filterIndex) {
+      this.activeFilterIndex = filterIndex
+    }
+  }
+})</code></pre>
+</div>
+
+<p>And now, we can use the <code class="highlighter-rouge">v-on</code> directive to map the emitted event <code class="highlighter-rouge">filter-selected</code> to the parent Vue instance’s <code class="highlighter-rouge">setFilter</code> method. Voilà</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;filter-list
+   v-on:filter-selected=&quot;setFilter&quot;
+   :active-index=&quot;activeFilterIndex&quot;
+   :filters=&quot;filters&quot;
+   :photo=&quot;photo&quot;&gt;
+&lt;/filter-list&gt;</code></pre>
+</div>
+
+<h2 id="updating-the-photo-preview">Updating the Photo Preview</h2>
+
+<p>Now for the grand finalé, let’s update the <code class="highlighter-rouge">&lt;photo-preview&gt;</code> component so that it takes an additional prop, <code class="highlighter-rouge">active-class</code>. With this class, we can dynamically apply the correct filter to the large preview image when a user selects an item in the filter carousel.</p>
+
+<p>Vue provides the <code class="highlighter-rouge">v-bind:class</code> directive to add a dynamic list of classes to a DOM element.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;photo-preview
+ :active-class=&quot;activeFilterClass&quot;
+ :photo=&quot;photo&quot;
+ &gt;&lt;/photo-preview&gt;</code></pre>
+</div>
+
+<div>
+  <pre data-line=""><code class="language-js">Vue.component(&#39;photo-preview&#39;, {
+  props: [&#39;photo&#39;, &#39;activeClass&#39;],
+  computed: {
+    photoAsBackgroundImageUrl: function () {
+      return `url(${this.photo})`
+    }
+  },
+  template: `
+    &lt;div
+      v-bind:class=&quot;[activeClass]&quot;
+      class=&quot;photo-preview bg-center cover flex-auto&quot;
+      v-bind:style=&quot;{backgroundImage: photoAsBackgroundImageUrl}&quot;&gt;
+    &lt;/div&gt;
+  `
+})</code></pre>
+</div>
+
+<h2 id="step-5-implement-the-back-button">Step 5: Implement the Back Button</h2>
+<p data-height="700" data-theme-id="0" data-slug-hash="ZKRpzV" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 5: Back Button [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/ZKRpzV/">Step 5: Back Button [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>That last feature was a doozy. Let’s build something simpler this time around, say, a back button that removes the uploaded photo and takes you back to the initial, empty state.</p>
+
+<p>In our <code class="highlighter-rouge">&lt;app-header&gt;</code> component, let’s add an <code class="highlighter-rouge">@click</code> directive to the button that contains the “Back” icon.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;button @click=&quot;goBack&quot;&gt;
+  &lt;i class=&quot;material-icons&quot;&gt;keyboard_arrow_left&lt;/i&gt;
+&lt;/button&gt;</code></pre>
+</div>
+
+<p>And let’s implement the <code class="highlighter-rouge">goBack</code> method that gets called when our button is clicked.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// Inside &lt;app-header&gt;
+methods: {
+  goBack: function () {
+    this.$emit(&#39;go-back&#39;)
+  }
+}</code></pre>
+</div>
+
+<p>By now you probably remember that, whenever we $emit an event, we must define a corresponding method on our parent Vue instance to handle it. In this case, we’ll set the <code class="highlighter-rouge">photo</code> string back to an empty one, and our <code class="highlighter-rouge">activeFilterIndex</code> to zero.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// Inside the parent Vue instance
+methods: {
+  resetApp: function () {
+    this.photo = &#39;&#39;
+    this.activeFilterIndex = 0
+  }
+}</code></pre>
+</div>
+
+<p>To finalize this coordination, let’s register the <code class="highlighter-rouge">go-back</code> event by using <code class="highlighter-rouge">v-on</code> directly on our <code class="highlighter-rouge">&lt;app-header&gt;</code> component.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;app-header v-on:go-back=&quot;resetApp&quot;&gt;&lt;/app-header&gt;</code></pre>
+</div>
+
+<h2 id="step-6-implement-the-filter-strength-slider">Step 6: Implement The Filter Strength Slider</h2>
+
+<p data-height="700" data-theme-id="0" data-slug-hash="LyreEV" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 6: Filter Strength Slider [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/LyreEV/">Step 6: Filter Strength Slider [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>Phew! One more major feature and we’ll be on the home stretch.</p>
+
+<p>First, let’s pull in noUiSlider and its dependencies via CDN.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.1.0/wNumb.min.js&quot;&gt;&lt;/script&gt;
+&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.css&quot;/&gt;</code></pre>
+</div>
+
+<h3 id="the-slider-component">The Slider Component</h3>
+
+<p>Next, let’s create a component called <code class="highlighter-rouge">&lt;strength-slider&gt;</code>. This component will have a few responsibilities:</p>
+
+<ul>
+  <li>It will appear conditionally (as a function of a user “double tapping” a filter)</li>
+  <li>When it appears, it will initialize an instance of noUiSlider</li>
+  <li>When that slider is dragged, it will emit its value (the “strength” of the filter) to the parent Vue instance</li>
+  <li>It will also show a “Done” button that, when clicked, will hide the slider and show the <code class="highlighter-rouge">&lt;filter-list&gt;</code> component</li>
+</ul>
+
+<p>The markup for this component is fairly straightforward.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// in the Strength Slider component
+template:
+  `&lt;div class=&quot;pa5&quot;&gt;
+    &lt;div id=&quot;slider&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;mt4 tc&quot;&gt;
+      &lt;button @click=&quot;hideFilterStrength&quot; class=&quot;fw6 f6 ttu black bn bg-white&quot;&gt;Done&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;`,</code></pre>
+</div>
+
+<p>Once the component has mounted, we can initialize noUiSlider and hook into the library’s event system. Each noUiSlider instance emits an ‘update’ event that we can listen to and handle accordingly. In our case, on <code class="highlighter-rouge">update</code>, we want to $emit an event to our parent Vue instance indicating that the currently selected filter’s strength has been adjusted.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// in the Strength Slider component
+mounted: function () {
+  let self = this
+  let sliderEl = this.$el.querySelector(&#39;#slider&#39;)
+  let options = {
+   connect: [true, false],
+   tooltips: true,
+   format: wNumb({
+    decimals: 0,
+   }),
+   start: [this.activeStrength],
+    step: 1,
+    range: {
+     &#39;min&#39;: [0],
+     &#39;max&#39;: [100]
+    }
+  }
+  let slider = noUiSlider.create(sliderEl, options)
+  slider.on(&#39;update&#39;, function (e) {
+   let newVal = e[0]
+   self.$emit(&#39;adjusted-filter-strength&#39;, newVal)
+  })
+}</code></pre>
+</div>
+
+<p>We also ought to implement the <code class="highlighter-rouge">hideFilterStrength</code> method that’s being passed to the “Done” button’s <code class="highlighter-rouge">@click</code> directive.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">methods: {
+  hideFilterStrength: function () {
+    this.$emit(&#39;hide-filter-strength&#39;)
+  }
+},</code></pre>
+</div>
+
+<p>We’re emitting two different events, and we haven’t yet updated our parent Vue instance! Let’s get to it.</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// parent Vue component
+data: {
+  showingFilterStrength: false,
+},
+computed: {
+  activeFilterStrength: function() {
+    return this.filters[this.activeFilterIndex].strength
+  },
+},
+methods: {
+  hideFilterStrength: function () {
+    this.showingFilterStrength = false
+  },
+  adjustFilterStrength: function (strength) {
+    this.filters[this.activeFilterIndex].strength = strength
+  }
+}</code></pre>
+</div>
+
+<p>And finally, let’s finish orchestrating the child-parent communication here with the <code class="highlighter-rouge">v-on</code> directive.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;strength-slider
+ v-if=&quot;showingFilterStrength&quot;
+ :active-strength=&quot;activeFilterStrength&quot;
+ v-on:hide-filter-strength=&quot;hideFilterStrength&quot;
+ v-on:adjusted-filter-strength=&quot;adjustFilterStrength&quot;&gt;
+&lt;/strength-slider&gt;</code></pre>
+</div>
+
+<h3 id="the-filter-list-component">The Filter List Component</h3>
+
+<p>As currently implemented, our slider component will never appear, since the expression inside its <code class="highlighter-rouge">v-if</code> directive, <code class="highlighter-rouge">showingFilterStrength</code> is hard-coded to false.</p>
+
+<p>So, let’s update our filter carousel so that when a filter is “double tapped”, that expression evalutes to true and thus shows the <code class="highlighter-rouge">&lt;strength-slider&gt;</code> component.</p>
+
+<p>For our intents and purposes, a “double tap” is when a user selects a filter whose index matches the <code class="highlighter-rouge">activeFilterIndex</code> attribute on our parent vue Instance. That means that users can <em>single</em> tap any filter to apply it, and tap it once more to toggle the <code class="highlighter-rouge">&lt;strength-slider&gt;</code> component.</p>
+
+<p>Here’s a GIF that should shed light on what’s happening under the hood.</p>
+
+<div style="width:100%;height:0px;position:relative;padding-bottom:199.142%;"><iframe src="https://streamable.com/s/7j90n/crygrq" frameborder="0" width="100%" height="50%" allowfullscreen="" style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>
+
+<div>
+  <pre data-line=""><code class="language-js">selectFilter: function (index) {
+  if (this.activeIndex === index) {
+    this.$emit(&#39;filter-double-tapped&#39;, index)
+  }
+
+  this.flickityInstance.select(index)
+  this.$emit(&#39;filter-selected&#39;, index)
+}</code></pre>
+</div>
+
+<p>Since we’re now emitting an event from the <code class="highlighter-rouge">&lt;filter-list&gt;</code> component, we have to add a handler to our parent Vue instance…</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// parent Vue instance
+methods: {
+  showFilterStrength: function () {
+    this.showingFilterStrength = true
+  }
+}</code></pre>
+</div>
+
+<p>…and finish the orchestration with a <code class="highlighter-rouge">v-on</code> directive on the component itself.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;filter-list
+   v-if=&quot;!showingFilterStrength&quot;
+   v-on:filter-double-tapped=&quot;showFilterStrength&quot;
+   v-on:filter-selected=&quot;setFilter&quot;
+   :active-index=&quot;activeFilterIndex&quot;
+   :filters=&quot;filters&quot;
+   :photo=&quot;photo&quot;&gt;
+&lt;/filter-list&gt;</code></pre>
+</div>
+
+<h3 id="the-photo-preview-component">The Photo Preview Component</h3>
+
+<p>Our Photo Preview component has a newfound responsibility: showing the user a preview of their photo, given the selected filter <strong>and</strong> its strength.</p>
+
+<p>Accordingly, we’ll need to make a few updates.</p>
+
+<ol>
+  <li>Update the <code class="highlighter-rouge">template</code> field on our component to render two <code class="highlighter-rouge">div</code>s, one stacked on top of the other. We’re doing this to create a crude “mask”</li>
+  <li>Read the <code class="highlighter-rouge">activeFilterStrength</code> value from our <code class="highlighter-rouge">&lt;strength-slider&gt;</code> as a prop, and use that to determine how transparent the top div should be (i.e., how “strong” the filter should appear)</li>
+</ol>
+
+<div>
+  <pre data-line=""><code class="language-js">Vue.component(&#39;photo-preview&#39;, {
+  props: [&#39;photo&#39;, &#39;activeClass&#39;, &#39;activeStrength&#39;],
+  computed: {
+    photoAsBackgroundImageUrl: function () {
+      return `url(${this.photo})`
+    },
+    filterOpacity: function () {
+      return this.activeStrength / 100
+    }
+  },
+  template: `
+    &lt;div class=&quot;relative flex-auto h-100&quot;&gt;
+      &lt;div v-bind:style=&quot;{backgroundImage: photoAsBackgroundImageUrl}&quot;
+           class=&quot;w-100 h-100 bg-center cover absolute top-0 left-0 bottom-0 right-0 z-4&quot;&gt;
+      &lt;/div&gt;
+      &lt;div v-bind:class=&quot;[activeClass]&quot;
+           v-bind:style=&quot;{opacity: filterOpacity, backgroundImage: photoAsBackgroundImageUrl}&quot;
+           class=&quot;w-100 h-100 bg-center cover absolute top-0 left-0 bottom-0 right-0 z-5&quot;&gt;
+       &lt;/div&gt;
+    &lt;/div&gt;
+  `
+})</code></pre>
+</div>
+
+<h3 id="the-back-button">The Back Button</h3>
+<p>Since our parent Vue instance now has more state (by keeping track of the <code class="highlighter-rouge">strength</code> attribute on each filter object), we must reset these values when a user clicks the back button.</p>
+
+<p>You may recall that we generate our list of filters at runtime by passing the <code class="highlighter-rouge">generateFilters</code> function to our parent Vue instance’s <code class="highlighter-rouge">filters</code> data attribute and calling it.</p>
+
+<p>To effectively “reset” this list of filters, let’s just do that maneuever one more time</p>
+
+<div>
+  <pre data-line=""><code class="language-js">// parent Vue instance
+methods: {
+  resetApp: function () {
+    this.photo = &#39;&#39;
+    this.activeFilterIndex = 0
+    this.filters = generateFilters() // hello, goodbye
+  }
+}</code></pre>
+</div>
+
+<h2 id="step-7-the-final-act--make-it-pop-with-transitions">Step 7: The Final Act – “Make it Pop” with Transitions</h2>
+<p data-height="700" data-theme-id="dark" data-slug-hash="MmXGrd" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 7: Transitions [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/MmXGrd/">Step 7: Transitions [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async="" src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+<p>We made it to the final step. The prototype “works,” but we can add transitions here and there to make things a bit smoother. Let’s pull in our final third-party library, <strong>Animate.css</strong>, via CDN.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;link href=&quot;https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css&quot;/&gt;</code></pre>
+</div>
+
+<p>By default, Vue doesn’t animate the entrance or exit of conditionally rendered elements (via <code class="highlighter-rouge">v-if</code>). We can change that by wrapping said conditionally rendered components in a <code class="highlighter-rouge">&lt;transition&gt;</code> component. All this component asks is that you provide instructions for how the transition should work.</p>
+
+<p>An amazing (and in-depth) explanation of Vue transitions can be found in the official docs. For now, suffice it to say that by adding a list of classes to the <code class="highlighter-rouge">enter-active-class</code> and <code class="highlighter-rouge">leave-active-class</code> directives, we can choreograph animations.<sup id="fnref:docs"><a href="#fn:docs" class="footnote">2</a></sup></p>
+
+<h2 id="fade-out-empty-state--fade-in-photo-preview">Fade Out Empty State / Fade In Photo Preview</h2>
+
+<p>This one is easy! Let’s wrap our sibling <code class="highlighter-rouge">&lt;empty-state&gt;</code> and <code class="highlighter-rouge">&lt;main&gt;</code> tags in a <code class="highlighter-rouge">&lt;transition&gt;</code> tag. We’ll use the <code class="highlighter-rouge">fadeIn</code> and <code class="highlighter-rouge">fadeOut</code> classes provided by Animate.css as the enter / leave classes respectively.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;transition
+  name=&quot;mainStageTransition&quot;
+  enter-active-class=&quot;animated fadeIn&quot;
+  leave-active-class=&quot;animated fadeOut&quot;&gt;
+  &lt;empty-state v-if=&quot;noPhotoUploaded&quot;&gt;&lt;/empty-state&gt;
+  &lt;main v-if=&quot;photoUploaded&quot;&gt;
+    &lt;!-- implementation details --&gt;
+  &lt;/main&gt;
+&lt;/transition&gt;</code></pre>
+</div>
+
+<h3 id="fade-out-filter-list--fade-in-strength-slider">Fade Out Filter List / Fade In Strength Slider</h3>
+
+<p>This one is easy, too! Let’s wrap our sibling <code class="highlighter-rouge">&lt;filter-list&gt;</code> and <code class="highlighter-rouge">&lt;strength-slider&gt;</code> components in a <code class="highlighter-rouge">&lt;transition&gt;</code> tag. Again we’ll use <code class="highlighter-rouge">fadeIn</code> and <code class="highlighter-rouge">fadeOut</code> to choreograph the transition. This time, though, we’ll provide the <code class="highlighter-rouge">out-in</code> mode so that the active element transitions out first, then when complete, the new element transitions in.</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;transition
+  name=&quot;filterAreaTransition&quot;
+  mode=&quot;out-in&quot;
+  enter-active-class=&quot;animated fadeIn&quot;
+  leave-active-class=&quot;animated fadeOut&quot;&gt;
+  &lt;filter-list
+    v-if=&quot;!showingFilterStrength&quot;&gt;
+  &lt;/filter-list&gt;
+  &lt;strength-slider
+    v-if=&quot;showingFilterStrength&quot;&gt;
+  &lt;/strength-slider&gt;
+&lt;/transition&gt;</code></pre>
+</div>
+
+<h3 id="fade-out-header--fade-in-active-filter-name">Fade Out Header / Fade In Active Filter Name</h3>
+
+<p>This one is a bit more complex. When the <code class="highlighter-rouge">&lt;strength-filter&gt;</code> component is visible, we want to hide the back button, Instagram logo, and next button, and instead show the active filter name. We’ll need to make a few code changes to achieve this effect.</p>
+
+<ul>
+  <li>Add a computed property to our parent Vue instance, <code class="highlighter-rouge">activeFilterName</code>, which returns the <code class="highlighter-rouge">displayName</code> attribute of the selected filter object</li>
+  <li>Pass <code class="highlighter-rouge">showingFilterStrength</code> and <code class="highlighter-rouge">activeFilterName</code> as props to the <code class="highlighter-rouge">&lt;app-header&gt;</code> component</li>
+  <li>Conditionally render the default elements (logo &amp; buttons) and the active filter name in the <code class="highlighter-rouge">&lt;app-header&gt;</code> component</li>
+</ul>
+
+<div>
+  <pre data-line=""><code class="language-js">// parent Vue instance
+computed {
+  activeFilterName: function () {
+    return this.filters[this.activeFilterIndex].displayName
+  },
+}</code></pre>
+</div>
+
+<p>Now, let’s update the template of our <code class="highlighter-rouge">&lt;app-header&gt;</code> component, adding two <code class="highlighter-rouge">&lt;transition&gt;</code> components for the different states that our header will live in</p>
+
+<div>
+  <pre data-line=""><code class="language-markup">&lt;div class=&quot;flex items-center relative overflow-hidden app-header bb b--black-10&quot;&gt;
+    &lt;transition
+      mode=&quot;out-in&quot;
+      name=&quot;headerTransition&quot;
+      enter-active-class=&quot;animated fadeInUp&quot;
+      leave-active-class=&quot;animated fadeOutDown&quot;&gt;
+      &lt;div v-if=&quot;!showingFilter&quot; class=&quot;absolute top-0 left-0 right-0 bottom-0 w-100 flex items-center&quot;&gt;
+       &lt;!-- back button, instagram logo, next button --&gt;
+     &lt;/div&gt;
+    &lt;/transition&gt;
+    &lt;transition
+      mode=&quot;out-in&quot;
+      name=&quot;filterTrans&quot;
+      enter-active-class=&quot;animated fadeInUp&quot;
+      leave-active-class=&quot;animated fadeOutDown&quot;&gt;
+       &lt;div v-if=&quot;showingFilter&quot; class=&quot;pl3&quot;&gt;
+          
+       &lt;/div&gt;
+      &lt;/transition&gt;
+  &lt;/div&gt;</code></pre>
+</div>
+
+<h2 id="in-conclusion">In Conclusion</h2>
+
+<p>We made it! Thanks so much for giving this article a read – I hope it wasn’t too painful.</p>
+
+<p>I apologize if any of the code snippets or explanations were unclear. <strong>Please</strong> don’t hesitate to reach out with questions, comments, or general feedback.</p>
+
+<p>Until then, Happy Prototyping!</p>
+
+<h2 id="footnotes">Footnotes</h2>
+<div class="footnotes">
+  <ol>
+    <li id="fn:cssgram">
+      <p><a href="https://github.com/una/CSSgram" target="_blank"><code class="highlighter-rouge">CSSGram</code> on GitHub</a>&nbsp;<a href="#fnref:cssgram" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:docs">
+      <p><a href="https://vuejs.org/v2/guide/transitions.html#Custom-Transition-Classes" target="_blank">Vue JS Documentation</a>&nbsp;<a href="#fnref:docs" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+  <script src="/prototyping-playbook/assets/vendor/prism.js" type="text/javascript"></script>
+</article>
+
+    </main>
+  </body>
+</html>
