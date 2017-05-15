@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-15T15:15:01-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>A winner's guide to prototyping in the browser
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="/prototyping-playbook/feed.xml" rel="self" type="application/atom+xml" /><link href="/prototyping-playbook/" rel="alternate" type="text/html" /><updated>2017-05-15T15:17:29-04:00</updated><id>/prototyping-playbook/</id><title type="html">Prototyping Playbook</title><subtitle>A winner's guide to prototyping in the browser
 </subtitle><entry><title type="html">Prototyping Instagram’s Filter UX</title><link href="/prototyping-playbook/instagram-prototype" rel="alternate" type="text/html" title="Prototyping Instagram's Filter UX" /><published>2017-05-12T09:00:00-04:00</published><updated>2017-05-12T09:00:00-04:00</updated><id>/prototyping-playbook/instagram-prototype</id><content type="html" xml:base="/prototyping-playbook/instagram-prototype">&lt;p&gt;To those who claim you can’t prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we’ll use Vue JS to re-create a workflow from Instagram’s mobile app: uploading a photo and applying a filter.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Warning: this is a long-form tutorial, so feel free to tackle it one step at a time.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Warning: this is a long-form tutorial, so feel free to tackle it at your own pace.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -205,7 +205,7 @@ let’s add the following combination of markup and Javascript to the mix.&lt;/p
 
 &lt;h2 id=&quot;step-3-componentization&quot;&gt;Step 3: Componentization&lt;/h2&gt;
 
-&lt;p data-height=&quot;700&quot; data-theme-id=&quot;0&quot; data-slug-hash=&quot;wdXMpx&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Step 3: Make it Prettier [Instagram Prototype]&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;https://codepen.io/mattrothenberg/pen/wdXMpx/&quot;&gt;Step 3: Make it Prettier [Instagram Prototype]&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
+&lt;p data-height=&quot;700&quot; data-theme-id=&quot;0&quot; data-slug-hash=&quot;wdXMpx&quot; data-default-tab=&quot;result&quot; data-user=&quot;mattrothenberg&quot; data-preview=&quot;true&quot; data-embed-version=&quot;2&quot; data-pen-title=&quot;Step 3: Make it Prettier [Instagram Prototype]&quot; class=&quot;codepen&quot;&gt;See the Pen &lt;a href=&quot;https://codepen.io/mattrothenberg/pen/wdXMpx/&quot;&gt;Step 3: Make it Prettier [Instagram Prototype]&lt;/a&gt; by Matt Rothenberg (&lt;a href=&quot;http://codepen.io/mattrothenberg&quot;&gt;@mattrothenberg&lt;/a&gt;) on &lt;a href=&quot;http://codepen.io&quot;&gt;CodePen&lt;/a&gt;.&lt;/p&gt;
 &lt;script async=&quot;&quot; src=&quot;https://production-assets.codepen.io/assets/embed/ei.js&quot;&gt;&lt;/script&gt;
 
 &lt;p&gt;Vue encourages us to pull out components as much as possible. Looking at the mockup, I see a few different components.&lt;/p&gt;
