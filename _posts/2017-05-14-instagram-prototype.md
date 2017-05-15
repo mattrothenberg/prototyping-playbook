@@ -3,7 +3,7 @@ layout: post
 title:  "Prototyping Instagram's Filter UX"
 date: 2017-05-12 09:00:00 -0400
 permalink: 'instagram-prototype'
-categories: ['Vue']
+categories: ['Vue', 'Long Form']
 ---
 
 To those who claim you can't prototype mobile user interfaces with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter.
@@ -208,17 +208,18 @@ Nice work. Before moving on, I encourage you to repeat this step until you're co
 <p data-height="700" data-theme-id="0" data-slug-hash="wdXMpx" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 3: Make it Prettier [Instagram Prototype]" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/wdXMpx/">Step 3: Make it Prettier [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-Vue encourages us to pull out components where possible. Looking at the finished product, I see a few different components:
+Vue encourages us to pull out components as much as possible. Looking at the mockup, I see a few different components.
 
-- A **header** with the Instagram logo, "Back" and "Next" buttons.
-- A **preview of our uploaded photo (and applied filter)**
-  - Takes `photo` as a prop
-- A **scrollable list of filters**
-  - Takes `photo` as a prop
+- A **header** with the Instagram logo, "Back" and "Next" buttons
+- A **preview** of our upload photo and the applied filter
+- A scrollable **list of filters**
+- A **slider** to adjust the strength of the applied filters
+
+Here's a rough diagram for visual learners:
 
 ![The Final Product]({{ site.baseurl }}/assets/img/posts/component-breakdown.png){: .w-100.w-50-l.db.center }
 
-Let's update our markup and Javascript accordingly. I'll omit the Javascript components from the tutorial, since they don't have any state (yet) and simply render HTML. Note, though, that we're passing down the `photo` to both the `<photo-preview>` and `<filter-list>` components.
+And so, our markup should look something like the following. Note that we're passing `photo` as a prop to both the `<photo-preview>` and `<filter-list>` components. This should make sense, considering both components need to have an awareness of this state in order to render a preview of the uploaded photo.
 
 {% prism markup %}
 <main class="flex flex-column h-100" v-if="photoUploaded">
@@ -228,13 +229,13 @@ Let's update our markup and Javascript accordingly. I'll omit the Javascript com
 </main>
 {% endprism %}
 
+I'm going to omit the Javascript implementation of these components, since they are solely responsible (at the moment) for taking a prop and rendering markup accordingly.
+
 ## Step 4: Implement the Filter List Carousel
 <p data-height="700" data-theme-id="0" data-slug-hash="bWKeNe" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 4: Filter List Carousel [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/bWKeNe/">Step 4: Filter List Carousel [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-Time for the fun part. Let's formulate a step-by-step game plan.
-
-## Just The Carousel
+### Grab The Filters
 
 First things first, let's pull in two of our third-party libraries, Flickity and CSSGram, via CDN.
 
@@ -243,14 +244,18 @@ First things first, let's pull in two of our third-party libraries, Flickity and
 <link href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css"/>
 {% endprism %}
 
-Next, let's generate a list of the filters provided by CSSGram, specifying the display name and class name of each. Since we'll eventually need to pass this list to our `<filter-list>` component as a property, let's go ahead and add it to our root instance's data model.
+CSSgram is a "library for editing images with Instagram-like filters directly using CSS. [It works by] applying color and/or gradient overlays via various blending techniques to mimic filter effects."[^cssgram]
+
+As such, it provides 20+ classes that we can apply to both the `<photo-preview>` component, and the thumbnails inside of our `<filter-list>` carousel.
+
+Since our prototype will make use of both the display name _and_ class name of each filter, it will be helpful to build a data structure that we can populate with this information. Let's write a function that generates an Array of `filter` objects, setting the display name, class name, and default strength (of 100) on each. In a later step, it will become clear why we generate this list with a function, instead of hard-coding it on our parent instance's data model.
 
 {% prism js %}
 const generateFilters = () => {
   return [
-   { displayName: '1977', className: '_1977', opacity: 1 },
-   { displayName: 'Aden', className: 'aden', opacity: 1 },
-   { displayName: 'Brannan', className: 'brannan', opacity: 1 }
+   { displayName: '1977', className: '_1977', strength: 100 },
+   { displayName: 'Aden', className: 'aden', strength: 100 },
+   { displayName: 'Brannan', className: 'brannan', strength: 100 }
    // etcetera
  ]
 }
@@ -272,9 +277,11 @@ new Vue({
 </filter-list>
 {% endprism %}
 
-Next, we need to modify our `<filter-list>` component so that it renders a **carousel** of available filters (applied to a thumbnail version of our uploaded photo). There are two steps to this dance.
+### Build The Carousel
 
-1. Leverage the `v-for` directive to iterate over the list of filters we received as a prop. We'll pluck the `className` attribute off each `filter` object and apply it to the`filter-preview` div to let users know what that filter looks like.
+Let's update our `<filter-list>` component so that it dynamically renders a carousel of Instagram filters. There are two steps to this dance.
+
+- Use the `v-for` directive to iterate over the list of `filters` that we received as a prop. We can pluck the `className` attribute off each `filter` object and apply it to the `filter-preview` DIV to create the appearance of a "thumbnail"
 
 {% prism js %}
 Vue.component('filter-list', {
@@ -292,7 +299,7 @@ Vue.component('filter-list', {
 })
 {% endprism %}
 
-2. Instantiate the Flickity library once the component is mounted, so that our static list of filters turns into a touch-enabled carousel
+- Instantiate the Flickity library once the component is mounted, so that our inline list of filters turns into a touch-enabled carousel
 
 {% prism js %}
 Vue.component('filter-list', {
@@ -316,16 +323,18 @@ Vue.component('filter-list', {
 })
 {% endprism %}
 
-So far so good. We have a beautiful carousel of filters. But nothing happens when you click on them! That's a sub-optimal user experience. Fortunately, it's one that can be fixed with **more code**.
+So far so good! We now have a beautiful carousel of filters. But nothing happens when you tap on one of them.
+
+That's a sub-optimal user experience. Fortunately, it's one that can be improved by **writing more code**.
 
 ## Selecting a Filter
 
 When a user taps a filter, we want to do two things:
 
-1. Scroll that filter into the center of the viewport
+1. Scroll that particular filter into the center of the viewport
 2. Apply that filter to the `<photo-preview>` component so that we can see what the filter actually does to the photo
 
-We'll start by adding an `@click` directive to each carousel item. When clicked, we'll call the `selectFilter` function to handle the tasks above.
+We can begin by adding an `@click` directive to each carousel item inside the `v-for` loop. When clicked, we'll call our component's `selectFilter` function to handle the aforementioned tasks.
 
 {% prism markup %}
 <div class="tc dib mr3 filter"
@@ -344,9 +353,14 @@ methods: {
 },
 {% endprism %}
 
-The first line of `selectFilter` tells the Flickity library to scroll the element at the given `index` into the center of the viewport. The second line, however, is another example of parent-child communication. We want to tell the parent Vue instance know that the user has chosen the filter at index `index`. Equipped with that information, our parent instance can now tell the `<photo-preview>` component that the active filter is the one living at location `filters[filter]`. Let's check out how we can orchestrate this dance.
+The first line of our `selectFilter` function tells the Flickity library to scroll the element at the given `index` into the center of the viewport.
 
-First, let's modify our parent Vue instance in a few ways.
+The second line, however, is another example of child-parent communication. In this scenario, we want to tell the parent Vue instance that a user has chosen the filter living at `index` on its `filters` array. Once equipped with that information, our parent Vue instance can pass the correct filter filter to the `<photo-preview>` component, thereby "applying" the filter to our glorious preview image.
+
+Let's see how we can orchestrate that maneuver.
+
+First, let's modify our parent Vue instance in a couple of ways.
+
 1. Add an `activeFilterIndex` property to its data model and set it to zero
 2. Add a computed property, `activeFilterClass`, so that we can dynamically (and automatically) pass the correct class name to the `<photo-preview>` component.
 3. Add a method, `setFilter`, to handle the event we'll emit from the `<filter-list>` component
@@ -372,7 +386,7 @@ new Vue({
 })
 {% endprism %}
 
-Now, we can add the `v-on` directive to our `<filter-list>` component so that the emitted event ('filter-selected') triggers the parent Vue instance's `setFilter` method.
+And now, we can use the `v-on` directive to map the emitted event `filter-selected` to the parent Vue instance's `setFilter` method. Voilà
 
 {% prism markup %}
 <filter-list
@@ -383,9 +397,11 @@ Now, we can add the `v-on` directive to our `<filter-list>` component so that th
 </filter-list>
 {% endprism %}
 
-## Updating the Preview
+## Updating the Photo Preview
 
-And for the grand finale, let's modify the `<photo-preview>` component so that it takes an additional property: `active-class`. This property will be the value of the parent Vue instance's computed property, `activeFilterClass`. We'll also update the component's template so that it dynamically applies `activeClass` via the `v-bind:class` directive.
+Now for the grand finalé, let's update the `<photo-preview>` component so that it takes an additional prop, `active-class`. With this class, we can dynamically apply the correct filter to the large preview image when a user selects an item in the filter carousel.
+
+Vue provides the `v-bind:class` directive to add a dynamic list of classes to a DOM element.
 
 {% prism markup %}
 <photo-preview
@@ -412,11 +428,13 @@ Vue.component('photo-preview', {
 })
 {% endprism %}
 
+
+
 ## Step 5: Implement the Back Button
 <p data-height="700" data-theme-id="0" data-slug-hash="ZKRpzV" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 5: Back Button [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/ZKRpzV/">Step 5: Back Button [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-That last feature was a doozy. Let's build something simpler this time around, say, a back button that removes your uploaded photo and takes you back to the initial, empty state.
+That last feature was a doozy. Let's build something simpler this time around, say, a back button that removes the uploaded photo and takes you back to the initial, empty state.
 
 In our `<app-header>` component, let's add an `@click` directive to the button that contains the "Back" icon.
 
@@ -426,7 +444,7 @@ In our `<app-header>` component, let's add an `@click` directive to the button t
 </button>
 {% endprism %}
 
-And let's implement the `goBack` method that gets called when our button is pressed.
+And let's implement the `goBack` method that gets called when our button is clicked.
 
 {% prism js %}
 // Inside <app-header>
@@ -437,7 +455,7 @@ methods: {
 }
 {% endprism %}
 
-Whenever we emit an event, we need to define a corresponding method on our parent Vue instance to handle it. In this case, we'll set the photo string back to an empty one, and our active filter index to zero.
+By now you probably remember that, whenever we $emit an event, we must define a corresponding method on our parent Vue instance to handle it. In this case, we'll set the `photo` string back to an empty one, and our `activeFilterIndex` to zero.
 
 {% prism js  %}
 // Inside the parent Vue instance
@@ -449,7 +467,7 @@ methods: {
 }
 {% endprism %}
 
-To finalize this coordination, let's register the `go-back` event by using `v-on` directly in the template where `<app-header>` is used.
+To finalize this coordination, let's register the `go-back` event by using `v-on` directly on our `<app-header>` component.
 
 {% prism markup %}
 <app-header v-on:go-back="resetApp"></app-header>
@@ -461,7 +479,7 @@ To finalize this coordination, let's register the `go-back` event by using `v-on
 <p data-height="700" data-theme-id="0" data-slug-hash="LyreEV" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 6: Filter Strength Slider [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/LyreEV/">Step 6: Filter Strength Slider [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 <script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-Again, there's quite a bit going on in this feature. I'll do my best to break it down, step-by-step.
+Phew! One more major feature and we'll be on the home stretch.
 
 First, let's pull in noUiSlider and its dependencies via CDN.
 
@@ -473,63 +491,65 @@ First, let's pull in noUiSlider and its dependencies via CDN.
 
 ### The Slider Component
 
-Next, let's create component called `<strength-slider>`. This component will have a few responsibilities:
+Next, let's create a component called `<strength-slider>`. This component will have a few responsibilities:
 
-- It will appear conditionally (as a function of a user double tapping a filter)
+- It will appear conditionally (as a function of a user "double tapping" a filter)
 - When it appears, it will initialize an instance of noUiSlider
-- When the slider is dragged, it will emit its value ("strength") to the parent Vue instance
+- When that slider is dragged, it will emit its value (the "strength" of the filter) to the parent Vue instance
 - It will also show a "Done" button that, when clicked, will hide the slider and show the `<filter-list>` component
 
-Next, let's create a component called `<strength-slider>` that will house our filter strength slider.
+The markup for this component is fairly straightforward.
 
 {% prism js %}
-Vue.component('strength-slider', {
-  props: ['activeStrength'],
-  template:
+// in the Strength Slider component
+template:
   `<div class="pa5">
     <div id="slider"></div>
     <div class="mt4 tc">
       <button @click="hideFilterStrength" class="fw6 f6 ttu black bn bg-white">Done</button>
     </div>
   </div>`,
-  methods: {
-    hideFilterStrength: function () {
-      this.$emit('hide-filter-strength')
-    }
-  },
-  mounted: function () {
-    let self = this
-    let sliderEl = this.$el.querySelector('#slider')
-    let options = {
-     connect: [true, false],
-     tooltips: true,
-     format: wNumb({
-      decimals: 0,
-     }),
-     start: [this.activeStrength],
-      step: 1,
-      range: {
-       'min': [0],
-       'max': [100]
-      }
-    }
-    let slider = noUiSlider.create(sliderEl, options)
-    slider.on('update', function (e) {
-     let newVal = e[0]
-     self.$emit('adjusted-filter-strength', newVal)
-    })
-  }
-})
 {% endprism %}
 
-{% prism markup %}
-<strength-slider
- v-if="showingFilterStrength"
- :active-strength="activeFilterStrength"
- v-on:hide-filter-strength="hideFilterStrength"
- v-on:adjusted-filter-strength="adjustFilterStrength">
-</strength-slider>
+Once the component has mounted, we can initialize noUiSlider and hook into the library's event system. Each noUiSlider instance emits an 'update' event that we can listen to and handle accordingly. In our case, on `update`, we want to $emit an event to our parent Vue instance indicating that the currently selected filter's strength has been adjusted.
+
+{% prism js %}
+// in the Strength Slider component
+mounted: function () {
+  let self = this
+  let sliderEl = this.$el.querySelector('#slider')
+  let options = {
+   connect: [true, false],
+   tooltips: true,
+   format: wNumb({
+    decimals: 0,
+   }),
+   start: [this.activeStrength],
+    step: 1,
+    range: {
+     'min': [0],
+     'max': [100]
+    }
+  }
+  let slider = noUiSlider.create(sliderEl, options)
+  slider.on('update', function (e) {
+   let newVal = e[0]
+   self.$emit('adjusted-filter-strength', newVal)
+  })
+}
 {% endprism %}
+
+We also ought to implement the `hideFilterStrength` method that's being passed to the "Done" button's `@click` directive.
+
+{% prism js %}
+methods: {
+  hideFilterStrength: function () {
+    this.$emit('hide-filter-strength')
+  }
+},
+{% endprism %}
+
+We're emitting two different events, and we haven't yet updated our parent Vue instance! Let's get to it.
 
 {% prism js %}
 // parent Vue component
@@ -551,12 +571,28 @@ methods: {
 }
 {% endprism %}
 
+And finally, let's finish orchestrating the child-parent communication here with the `v-on` directive.
+
+{% prism markup %}
+<strength-slider
+ v-if="showingFilterStrength"
+ :active-strength="activeFilterStrength"
+ v-on:hide-filter-strength="hideFilterStrength"
+ v-on:adjusted-filter-strength="adjustFilterStrength">
+</strength-slider>
+{% endprism %}
+
 ### The Filter List Component
 
-Here, we need to make a change so that when a filter is double tapped, the `<strength-slider>` component shows and the `<filter-list>` component hides.
+As currently implemented, our slider component will never appear, since the expression inside its `v-if` directive, `showingFilterStrength` is hard-coded to false.
 
-We'll define a "double tap" as when a user selects a filter whose index matches the `activeFilterIndex` that `<filter-list>` receives as a prop. That means that users can single tap any filter to see how the filter will affect the `<photo-preview>`, and all they have to do is tap again to toggle the `<strength-slider>` component.
+So, let's update our filter carousel so that when a filter is "double tapped", that expression evalutes to true and thus shows the `<strength-slider>` component.
 
+For our intents and purposes, a "double tap" is when a user selects a filter whose index matches the `activeFilterIndex` attribute on our parent vue Instance. That means that users can _single_ tap any filter to apply it, and tap it once more to toggle the `<strength-slider>` component.
+
+Here's a GIF that should shed light on what's happening under the hood.
+
+<div style="width:100%;height:0px;position:relative;padding-bottom:199.142%;"><iframe src="https://streamable.com/s/7j90n/crygrq" frameborder="0" width="100%" height="50%" allowfullscreen style="width:100%;height:100%;position:absolute;left:0px;top:0px;overflow:hidden;"></iframe></div>
 
 {% prism js %}
 selectFilter: function (index) {
@@ -566,11 +602,22 @@ selectFilter: function (index) {
 
   this.flickityInstance.select(index)
   this.$emit('filter-selected', index)
-},
-
+}
 {% endprism %}
 
-Since we're now rendering the `<filter-list>` component conditionally and we're emitting an event to the parent Vue instance, we need to modify the component in our template accordingly.
+Since we're now emitting an event from the `<filter-list>` component, we have to add a handler to our parent Vue instance...
+
+{% prism js %}
+
+// parent Vue instance
+methods: {
+  showFilterStrength: function () {
+    this.showingFilterStrength = true
+  }
+}
+{% endprism %}
+
+...and finish the orchestration with a `v-on` directive on the component itself.
 
 {% prism markup %}
 <filter-list
@@ -583,25 +630,13 @@ Since we're now rendering the `<filter-list>` component conditionally and we're 
 </filter-list>
 {% endprism %}
 
-And in our parent Vue instance, let's define the `showFilterStrength` method that's bound to the emitted `filter-double-tapped` event.
-
-{% prism js %}
-
-// parent Vue instance
-methods: {
-  showFilterStrength: function () {
-    this.showingFilterStrength = true
-  }
-}
-{% endprism %}
-
 ### The Photo Preview Component
 
-The Photo Preview component has a newfound responsibility: showing the user how their photo will appear, given the selected filter **and** filter strength.
+Our Photo Preview component has a newfound responsibility: showing the user a preview of their photo, given the selected filter **and** its strength.
 
-So, we need to make a few changes here:
+Accordingly, we'll need to make a few updates.
 
-1. Update the `template` field on our component to render two `div`s, one stacked on top of the other.
+1. Update the `template` field on our component to render two `div`s, one stacked on top of the other. We're doing this to create a crude "mask"
 2. Read the `activeFilterStrength` value from our `<strength-slider>` as a prop, and use that to determine how transparent the top div should be (i.e., how "strong" the filter should appear)
 
 {% prism js %}
@@ -630,12 +665,11 @@ Vue.component('photo-preview', {
 {% endprism %}
 
 ### The Back Button
+Since our parent Vue instance now has more state (by keeping track of the `strength` attribute on each filter object), we must reset these values when a user clicks the back button.
 
-Since our parent Vue instance now has more state (strength per filter), we need to reset this when a user clicks the back button.
+You may recall that we generate our list of filters at runtime by passing the `generateFilters` function to our parent Vue instance's `filters` data attribute and calling it.
 
-You may recall that the strength attribute lives on each `filter` object in the `filters` array. We created this array at runtime by passing the `generateFilters()` function to our parent Vue instance's `filters` data attribute.
-
-To effectively "reset" this attribute, let's just call that function one more time.
+To effectively "reset" this list of filters, let's just do that maneuever one more time
 
 {% prism js %}
 // parent Vue instance
@@ -643,19 +677,24 @@ methods: {
   resetApp: function () {
     this.photo = ''
     this.activeFilterIndex = 0
-    this.filters = generateFilters()
+    this.filters = generateFilters() // hello, goodbye
   }
 }
 {% endprism %}
 
-
 ## Step 7: The Final Act – "Make it Pop" with Transitions
+<p data-height="700" data-theme-id="dark" data-slug-hash="MmXGrd" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 7: Transitions [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/MmXGrd/">Step 7: Transitions [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-We're on the home stretch. The prototype "works," but we can add transitions here and there to make things a bit smoother. Let's pull in our final third-party library, **Animate.css**, via CDN.
+We made it to the final step. The prototype "works," but we can add transitions here and there to make things a bit smoother. Let's pull in our final third-party library, **Animate.css**, via CDN.
 
 {% prism markup %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"/>
 {% endprism %}
+
+By default, Vue doesn't animate the entrance or exit of conditionally rendered elements (via `v-if`). We can change that by wrapping said conditionally rendered components in a `<transition>` component. All this component asks is that you provide instructions for how the transition should work.
+
+An amazing (and in-depth) explanation of Vue transitions can be found in the official docs. For now, suffice it to say that by adding a list of classes to the `enter-active-class` and `leave-active-class` directives, we can choreograph animations.[^docs]
 
 ## Fade Out Empty State / Fade In Photo Preview
 
@@ -697,9 +736,9 @@ This one is easy, too! Let's wrap our sibling `<filter-list>` and `<strength-sli
 
 This one is a bit more complex. When the `<strength-filter>` component is visible, we want to hide the back button, Instagram logo, and next button, and instead show the active filter name. We'll need to make a few code changes to achieve this effect.
 
-- Add a computed property to our parent Vue instance, `activeFilterName`, which does as it says
+- Add a computed property to our parent Vue instance, `activeFilterName`, which returns the `displayName` attribute of the selected filter object
 - Pass `showingFilterStrength` and `activeFilterName` as props to the `<app-header>` component
-- Conditionally render the default elements (logo & buttons) and the active filter name in the `<app-header> component`
+- Conditionally render the default elements (logo & buttons) and the active filter name in the `<app-header>` component
 
 {% prism js %}
 // parent Vue instance
@@ -710,7 +749,7 @@ computed {
 }
 {% endprism %}
 
-Now, we must update the template of our `<app-header>` component, adding two `<transition>` components for the different states that our header will live in
+Now, let's update the template of our `<app-header>` component, adding two `<transition>` components for the different states that our header will live in
 
 {% prism markup %}
 <div class="flex items-center relative overflow-hidden app-header bb b--black-10">
@@ -734,3 +773,15 @@ Now, we must update the template of our `<app-header>` component, adding two `<t
       </transition>
   </div>
 {% endprism %}
+
+## In Conclusion
+
+We made it! Thanks so much for giving this article a read – I hope it wasn't too painful.
+
+I apologize if any of the code snippets or explanations were unclear. **Please** don't hesitate to reach out with questions, comments, or general feedback.
+
+Until then, Happy Prototyping!
+
+## Footnotes
+[^cssgram]: [`CSSGram` on GitHub](https://github.com/una/CSSgram){:target="_blank"}
+[^docs]:[Vue JS Documentation](https://vuejs.org/v2/guide/transitions.html#Custom-Transition-Classes){:target="_blank"}
