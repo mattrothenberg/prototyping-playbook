@@ -380,3 +380,6 @@ Vue.component('photo-preview', {
   `
 })
 {% endprism %}
+
+## Step 5: Implement the Back Button
+That last feature was a doozy. Let's build something simpler this time around, say, a back button that removes your uploaded photo and takes you back to the initial, empty state.
