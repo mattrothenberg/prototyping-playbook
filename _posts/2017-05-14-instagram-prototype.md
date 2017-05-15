@@ -442,6 +442,15 @@ First, let's pull in noUiSlider and its dependencies via CDN.
 <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.css"/>
 {% endprism %}
 
+### The Slider Component
+
+Next, let's create component called `<strength-slider>`. This component will have a few responsibilities:
+
+- It will appear conditionally (as a function of a user double tapping a filter)
+- When it appears, it will initialize an instance of noUiSlider
+- When the slider is dragged, it will emit its value ("strength") to the parent Vue instance
+- It will also show a "Done" button that, when clicked, will hide the slider and show the `<filter-list>` component
+
 Next, let's create a component called `<strength-slider>` that will house our filter strength slider.
 
 {% prism js %}
@@ -451,9 +460,14 @@ Vue.component('strength-slider', {
   `<div class="pa5">
     <div id="slider"></div>
     <div class="mt4 tc">
-      <button class="fw6 f6 ttu black bn bg-white">Done</button>
+      <button @click="hideFilterStrength" class="fw6 f6 ttu black bn bg-white">Done</button>
     </div>
   </div>`,
+  methods: {
+    hideFilterStrength: function () {
+      this.$emit('hide-filter-strength')
+    }
+  },
   mounted: function () {
     let self = this
     let sliderEl = this.$el.querySelector('#slider')
@@ -470,26 +484,152 @@ Vue.component('strength-slider', {
        'max': [100]
       }
     }
-
     let slider = noUiSlider.create(sliderEl, options)
+    slider.on('update', function (e) {
+     let newVal = e[0]
+     self.$emit('adjusted-filter-strength', newVal)
+    })
   }
 })
 {% endprism %}
 
+{% prism markup %}
+<strength-slider
+ v-if="showingFilterStrength"
+ :active-strength="activeFilterStrength"
+ v-on:hide-filter-strength="hideFilterStrength"
+ v-on:adjusted-filter-strength="adjustFilterStrength">
+</strength-slider>
+{% endprism %}
+
+{% prism js %}
+// parent Vue component
+data: {
+  showingFilterStrength: false,
+},
+computed: {
+  activeFilterStrength: function() {
+    return this.filters[this.activeFilterIndex].strength
+  },
+},
+methods: {
+  hideFilterStrength: function () {
+    this.showingFilterStrength = false
+  },
+  adjustFilterStrength: function (strength) {
+    this.filters[this.activeFilterIndex].strength = strength
+  }
+}
+{% endprism %}
+
+### The Filter List Component
+
+Here, we need to make a change so that when a filter is double tapped, the `<strength-slider>` component shows and the `<filter-list>` component hides.
+
+We'll define a "double tap" as when a user selects a filter whose index matches the `activeFilterIndex` that `<filter-list>` receives as a prop. That means that users can single tap any filter to see how the filter will affect the `<photo-preview>`, and all they have to do is tap again to toggle the `<strength-slider>` component.
+
+
+{% prism js %}
+selectFilter: function (index) {
+  if (this.activeIndex === index) {
+    this.$emit('filter-double-tapped', index)
+  }
+
+  this.flickityInstance.select(index)
+  this.$emit('filter-selected', index)
+},
+
+{% endprism %}
+
+Since we're now rendering the `<filter-list>` component conditionally and we're emitting an event to the parent Vue instance, we need to modify the component in our template accordingly.
+
+{% prism markup %}
+<filter-list
+   v-if="!showingFilterStrength"
+   v-on:filter-double-tapped="showFilterStrength"
+   v-on:filter-selected="setFilter"
+   :active-index="activeFilterIndex"
+   :filters="filters"
+   :photo="photo">
+</filter-list>
+{% endprism %}
+
+And in our parent Vue instance, let's define the `showFilterStrength` method that's bound to the emitted `filter-double-tapped` event.
+
+{% prism js %}
+
+// parent Vue instance
+methods: {
+  showFilterStrength: function () {
+    this.showingFilterStrength = true
+  }
+}
+{% endprism %}
+
+### The Photo Preview Component
+
+The Photo Preview component has a newfound responsibility: showing the user how their photo will appear, given the selected filter **and** filter strength.
+
+So, we need to make a few changes here:
+
+1. Update the `template` field on our component to render two `div`s, one stacked on top of the other.
+2. Read the `activeFilterStrength` value from our `<strength-slider>` as a prop, and use that to determine how transparent the top div should be (i.e., how "strong" the filter should appear)
+
+{% prism js %}
+Vue.component('photo-preview', {
+  props: ['photo', 'activeClass', 'activeStrength'],
+  computed: {
+    photoAsBackgroundImageUrl: function () {
+      return `url(${this.photo})`
+    },
+    filterOpacity: function () {
+      return this.activeStrength / 100
+    }
+  },
+  template: `
+    <div class="relative flex-auto h-100">
+      <div v-bind:style="{backgroundImage: photoAsBackgroundImageUrl}"
+           class="w-100 h-100 bg-center cover absolute top-0 left-0 bottom-0 right-0 z-4">
+      </div>
+      <div v-bind:class="[activeClass]"
+           v-bind:style="{opacity: filterOpacity, backgroundImage: photoAsBackgroundImageUrl}"
+           class="w-100 h-100 bg-center cover absolute top-0 left-0 bottom-0 right-0 z-5">
+       </div>
+    </div>
+  `
+})
+{% endprism %}
+
+### The Back Button
+
+Since our parent Vue instance now has more state (strength per filter), we need to reset this when a user clicks the back button.
+
+You may recall that the strength attribute lives on each `filter` object in the `filters` array. We created this array at runtime by passing the `generateFilters()` function to our parent Vue instance's `filters` data attribute.
+
+To effectively "reset" this attribute, let's just call that function one more time.
+
+{% prism js %}
+// parent Vue instance
+methods: {
+  resetApp: function () {
+    this.photo = ''
+    this.activeFilterIndex = 0
+    this.filters = generateFilters()
+  }
+}
+{% endprism %}
 
 
 
+### To Dos
 
+We'll need to modify our `<filter-list>` component in a few ways as well:
 
-
-
-
-
-
-
+- In the `selectFilter` function, we need to figure out when to show the `<strength-slider>` component
 
 Update past codepens to use "strength"
 Update bg-center class on thumbnails
 update app-header height
+remove flickity from parent
 
 nouislider via cdn
