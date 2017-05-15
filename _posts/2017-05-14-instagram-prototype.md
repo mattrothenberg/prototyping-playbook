@@ -21,11 +21,13 @@ The best advice I can give you (or anyone else who's looking to become a stronge
 
 - The touch-enabled carousel of photo filters
 - The photo filters themselves
+- The touch-enabled slider to adjust the filter strength
 
 A quick Google search for a library or plugin far outweighs a futile attempt to hand-roll this functionality ourselves. I've identified the following libraries that will help us with today's task.
 
 - [Flickity](https://flickity.metafizzy.co/){:target="_blank"} – a library for creating "touch, responsive, flickable carousels"
-- [CSSGram](https://una.im/CSSgram/) – a library for recreating Instagram filters with CSS filters and blend modes
+- [CSSGram](https://una.im/CSSgram/){:target="_blank"} – a library for recreating Instagram filters with CSS filters and blend modes
+- [noUISlider](https://refreshless.com/nouislider/){:target="_blank"} – a lightweight JavaScript range slider
 
 Let's get to coding.
 
@@ -205,7 +207,7 @@ Time for the fun part. Let's formulate a step-by-step game plan.
 
 ## Just The Carousel
 
-First things first, let's pull in our third-party libraries, Flickity and CSSGram, via CDN.
+First things first, let's pull in two of our third-party libraries, Flickity and CSSGram, via CDN.
 
 {% prism markup %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/2.0.5/flickity.pkgd.min.js"></script>
@@ -423,3 +425,71 @@ To finalize this coordination, let's register the `go-back` event by using `v-on
 {% prism markup %}
 <app-header v-on:go-back="resetApp"></app-header>
 {% endprism %}
+
+
+## Step 6: Implement The Filter Strength Slider
+
+<p data-height="700" data-theme-id="0" data-slug-hash="LyreEV" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 6: Filter Strength Slider [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="http://codepen.io/mattrothenberg/pen/LyreEV/">Step 6: Filter Strength Slider [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+
+Again, there's quite a bit going on in this feature. I'll do my best to break it down, step-by-step.
+
+First, let's pull in noUiSlider and its dependencies via CDN.
+
+{% prism markup %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.1.0/wNumb.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.2.0/nouislider.min.css"/>
+{% endprism %}
+
+Next, let's create a component called `<strength-slider>` that will house our filter strength slider.
+
+{% prism js %}
+Vue.component('strength-slider', {
+  props: ['activeStrength'],
+  template:
+  `<div class="pa5">
+    <div id="slider"></div>
+    <div class="mt4 tc">
+      <button class="fw6 f6 ttu black bn bg-white">Done</button>
+    </div>
+  </div>`,
+  mounted: function () {
+    let self = this
+    let sliderEl = this.$el.querySelector('#slider')
+    let options = {
+     connect: [true, false],
+     tooltips: true,
+     format: wNumb({
+      decimals: 0,
+     }),
+     start: [this.activeStrength],
+      step: 1,
+      range: {
+       'min': [0],
+       'max': [100]
+      }
+    }
+
+    let slider = noUiSlider.create(sliderEl, options)
+  }
+})
+{% endprism %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+Update past codepens to use "strength"
+Update bg-center class on thumbnails
+update app-header height
+
+nouislider via cdn
