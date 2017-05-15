@@ -6,7 +6,7 @@ permalink: 'instagram-prototype'
 categories: ['Vue']
 ---
 
-To those who claim you can't prototype mobile UIs with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter.
+To those who claim you can't prototype mobile UIs with the tools of the web, I raise you the following tutorial. In this play, we'll use Vue JS to re-create a workflow from Instagram's mobile app: uploading a photo and applying a filter. This is a long-form tutorial, so feel free to tackle it one step at a time!
 
 ## Scenario
 You're an enterprising front-end developer convinced that the sky is the limit when it comes to prototyping with HTML, CSS, and Javascript. You tell your friends that you can prototype the "Apply Filter" workflow from Instagram's mobile app in under an hour. Go.
@@ -198,9 +198,185 @@ Let's update our markup and Javascript accordingly. I'll omit the Javascript com
 {% endprism %}
 
 ## Step 4: Implement the Filter List Carousel
+<p data-height="700" data-theme-id="0" data-slug-hash="bWKeNe" data-default-tab="result" data-user="mattrothenberg" data-embed-version="2" data-pen-title="Step 4: Filter List Carousel [Instagram Prototype]" data-preview="true" class="codepen">See the Pen <a href="https://codepen.io/mattrothenberg/pen/bWKeNe/">Step 4: Filter List Carousel [Instagram Prototype]</a> by Matt Rothenberg (<a href="http://codepen.io/mattrothenberg">@mattrothenberg</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
-- Pull in Flickity via CDN
-- Pull in CSSGram via CDN
-- Gather all our filters as defined in CSSGram
+Time for the fun part. Let's formulate a step-by-step game plan.
 
-https://codepen.io/mattrothenberg/pen/bWKeNe?editors=1011
+## Just The Carousel
+
+First things first, let's pull in our third-party libraries, Flickity and CSSGram, via CDN.
+
+{% prism markup %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flickity/2.0.5/flickity.pkgd.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cssgram/0.1.10/cssgram.min.css"/>
+{% endprism %}
+
+Next, let's generate a list of the filters provided by CSSGram, specifying the display name and class name of each. Since we'll eventually need to pass this list to our `<filter-list>` component as a property, let's go ahead and add it to our root instance's data model.
+
+{% prism js %}
+const generateFilters = () => {
+  return [
+   { displayName: '1977', className: '_1977', opacity: 1 },
+   { displayName: 'Aden', className: 'aden', opacity: 1 },
+   { displayName: 'Brannan', className: 'brannan', opacity: 1 }
+   // etcetera
+ ]
+}
+
+new Vue({
+  el: '#instagram',
+  data: {
+    photo: '',
+    filters: generateFilters()
+  }
+  // etcetera
+})
+{% endprism %}
+
+{% prism markup %}
+<filter-list
+  :filters="filters"
+  :photo="photo">
+</filter-list>
+{% endprism %}
+
+Next, we need to modify our `<filter-list>` component so that it renders a **carousel** of available filters (applied to a thumbnail version of our uploaded photo). There are two steps to this dance.
+
+1. Leverage the `v-for` directive to iterate over the list of filters we received as a prop. We'll pluck the `className` attribute off each `filter` object and apply it to the`filter-preview` div to let users know what that filter looks like.
+
+{% prism js %}
+Vue.component('filter-list', {
+  props: ['photo', 'filters'],
+  template: `
+    <div class="filter-list pa3">
+      <div class="tc dib mr3 filter" v-for="(filter, index) in filters">
+        <h4 class="f5 fw5 mt0 mb2">{{ filter.displayName }}</h4>
+      <div v-bind:class="[filter.className]" class="filter-preview aspect-ratio aspect-ratio--1x1">
+        <div class="aspect-ratio--object cover" v-bind:style="{backgroundImage: photoAsBackgroundImageUrl}"></div>
+      </div>
+    </div>
+  </div>`,
+  // etcetera
+})
+{% endprism %}
+
+2. Instantiate the Flickity library once the component is mounted, so that our static list of filters turns into a touch-enabled carousel
+
+{% prism js %}
+Vue.component('filter-list', {
+  // stuff above here
+  data: function () {
+    return {
+      flickityInstance: {}
+    }
+  },
+  mounted: function () {
+    this.flickityInstance = new Flickity(this.$el, {
+      cellAlign: 'center',
+      contain: true,
+      initialIndex: 0,
+      pageDots: false,
+      setGallerySize: true,
+      prevNextButtons: false
+    })
+  }
+  // etcetera
+})
+{% endprism %}
+
+So far so good. We have a beautiful carousel of filters. But nothing happens when you click on them! That's a sub-optimal user experience. Fortunately, it's one that can be fixed with **more code**.
+
+## Selecting a Filter
+
+When a user taps a filter, we want to do two things:
+
+1. Scroll that filter into the center of the viewport
+2. Apply that filter to the `<photo-preview>` component so that we can see what the filter actually does to the photo
+
+We'll start by adding an `@click` directive to each carousel item. When clicked, we'll call the `selectFilter` function to handle the tasks above.
+
+{% prism markup %}
+<div class="tc dib mr3 filter"
+    v-for="(filter, index) in filters"
+    @click="selectFilter(index)">
+  <!-- lol implementation details -->
+</div>
+{% endprism %}
+
+{% prism js %}
+methods: {
+  selectFilter: function (index) {
+    this.flickityInstance.select(index)
+    this.$emit('filter-selected', index)
+  },
+},
+{% endprism %}
+
+The first line of `selectFilter` tells the Flickity library to scroll the element at the given `index` into the center of the viewport. The second line, however, is another example of parent-child communication. We want to tell the parent Vue instance know that the user has chosen the filter at index `index`. Equipped with that information, our parent instance can now tell the `<photo-preview>` component that the active filter is the one living at location `filters[filter]`. Let's check out how we can orchestrate this dance.
+
+First, let's modify our parent Vue instance in a few ways.
+1. Add an `activeFilterIndex` property to its data model and set it to zero
+2. Add a computed property, `activeFilterClass`, so that we can dynamically (and automatically) pass the correct class name to the `<photo-preview>` component.
+3. Add a method, `setFilter`, to handle the event we'll emit from the `<filter-list>` component
+
+{% prism js %}
+new Vue({
+  el: '#instagram',
+  data: {
+    activeFilterIndex: 0,
+    photo: '',
+    filters: generateFilters()
+  },
+  computed: {
+    activeFilterClass: function() {
+      return this.filters[this.activeFilterIndex].className
+    }
+  },
+  methods: {
+    setFilter: function (filterIndex) {
+      this.activeFilterIndex = filterIndex
+    }
+  }
+})
+{% endprism %}
+
+Now, we can add the `v-on` directive to our `<filter-list>` component so that the emitted event ('filter-selected') triggers the parent Vue instance's `setFilter` method.
+
+{% prism markup %}
+<filter-list
+   v-on:filter-selected="setFilter"
+   :active-index="activeFilterIndex"
+   :filters="filters"
+   :photo="photo">
+</filter-list>
+{% endprism %}
+
+## Updating the Preview
+
+And for the grand finale, let's modify the `<photo-preview>` component so that it takes an additional property: `active-class`. This property will be the value of the parent Vue instance's computed property, `activeFilterClass`. We'll also update the component's template so that it dynamically applies `activeClass` via the `v-bind:class` directive.
+
+{% prism markup %}
+<photo-preview
+ :active-class="activeFilterClass"
+ :photo="photo"
+ ></photo-preview>
+{% endprism %}
+
+{% prism js %}
+Vue.component('photo-preview', {
+  props: ['photo', 'activeClass'],
+  computed: {
+    photoAsBackgroundImageUrl: function () {
+      return `url(${this.photo})`
+    }
+  },
+  template: `
+    <div
+      v-bind:class="[activeClass]"
+      class="photo-preview bg-center cover flex-auto"
+      v-bind:style="{backgroundImage: photoAsBackgroundImageUrl}">
+    </div>
+  `
+})
+{% endprism %}
