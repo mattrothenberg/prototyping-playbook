@@ -7,9 +7,7 @@ layout: default
   {% for post in site.posts %}
     <article class="mb4 mb5-l">
       <header>
-        <div class="flex items-center mb1">
-          <h4 class="mv0 fw9 ttu f6 tracked-1 red o-70">{{ post.date | date: "%-d %B %Y"}}</h4>
-        </div>
+        <h4 class="mt0 mb1 fw9 ttu f6 tracked-1 red o-70">{{ post.date | date: "%-d %B %Y"}}</h4>
         <h2 class="f3 mt0 mb2 lh-title fw6 red">
           <a class="link color-inherit hover-red" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
         </h2>
