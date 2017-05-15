@@ -17,20 +17,21 @@ You're an enterprising front-end developer convinced that the sky is the limit w
 
 ## Rundown
 
-The best advice I can give you (or anyone else who's looking to become a stronger prototyper) is **don't re-invent the wheel.** As this advice relates to the task at hand, the first thing we should do is identify libraries and plugins that give us some of the functionality from the video above. My gut tells me there are two particulary tricky bits:
+The best advice I can give you (or anyone else who's looking to become a stronger prototyper) is **don't re-invent the wheel.** As this advice relates to the task at hand, the first thing we should do is identify libraries and plugins that give us some of the functionality from the video above. My gut tells me there are four particulary tricky bits:
 
 - The touch-enabled carousel of photo filters
 - The photo filters themselves
 - The touch-enabled slider to adjust the filter strength
+- The fade/slide transitions through the workflow
 
 A quick Google search for a library or plugin far outweighs a futile attempt to hand-roll this functionality ourselves. I've identified the following libraries that will help us with today's task.
 
 - [Flickity](https://flickity.metafizzy.co/){:target="_blank"} – a library for creating "touch, responsive, flickable carousels"
 - [CSSGram](https://una.im/CSSgram/){:target="_blank"} – a library for recreating Instagram filters with CSS filters and blend modes
 - [noUISlider](https://refreshless.com/nouislider/){:target="_blank"} – a lightweight JavaScript range slider
+- [Animate.css](https://daneden.github.io/animate.css/){:target="_blank"} – Just-add-water CSS animations
 
 Let's get to coding.
-
 
 ## Step 1: Scaffold the Project
 
@@ -620,16 +621,88 @@ methods: {
 {% endprism %}
 
 
+## Step 7: Add Some Transitions ("Make it Pop")
 
-### To Dos
+We're on the home stretch. The prototype "works," but we can add transitions here and there to make things a bit smoother. Let's pull in our final third-party library, **Animate.css**, via CDN.
 
-We'll need to modify our `<filter-list>` component in a few ways as well:
+{% prism markup %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"/>
+{% endprism %}
 
-- In the `selectFilter` function, we need to figure out when to show the `<strength-slider>` component
+## Fade Out Empty State / Fade In Photo Preview
 
-Update past codepens to use "strength"
-Update bg-center class on thumbnails
-update app-header height
-remove flickity from parent
+This one is easy! Let's wrap our sibling `<empty-state>` and `<main>` tags in a `<transition>` tag. We'll use the `fadeIn` and `fadeOut` classes provided by Animate.css as the enter / leave classes respectively.
 
-nouislider via cdn
+{% prism markup %}
+<transition
+  name="mainStageTransition"
+  enter-active-class="animated fadeIn"
+  leave-active-class="animated fadeOut">
+  <empty-state v-if="noPhotoUploaded"></empty-state>
+  <main v-if="photoUploaded">
+    <!-- implementation details -->
+  </main>
+</transition>
+{% endprism %}
+
+### Fade Out Filter List / Fade In Strength Slider
+
+This one is easy, too! Let's wrap our sibling `<filter-list>` and `<strength-slider>` components in a `<transition>` tag. Again we'll use `fadeIn` and `fadeOut` to choreograph the transition. This time, though, we'll provide the `out-in` mode so that the active element transitions out first, then when complete, the new element transitions in.
+
+{% prism markup %}
+<transition
+  name="filterAreaTransition"
+  mode="out-in"
+  enter-active-class="animated fadeIn"
+  leave-active-class="animated fadeOut">
+  <filter-list
+    v-if="!showingFilterStrength">
+  </filter-list>
+  <strength-slider
+    v-if="showingFilterStrength">
+  </strength-slider>
+</transition>
+{% endprism %}
+
+
+### Fade Out Header / Fade In Active Filter Name
+
+This one is a bit more complex. When the `<strength-filter>` component is visible, we want to hide the back button, Instagram logo, and next button, and instead show the active filter name. We'll need to make a few code changes to achieve this effect.
+
+- Add a computed property to our parent Vue instance, `activeFilterName`, which does as it says
+- Pass `showingFilterStrength` and `activeFilterName` as props to the `<app-header>` component
+- Conditionally render the default elements (logo & buttons) and the active filter name in the `<app-header> component`
+
+{% prism js %}
+// parent Vue instance
+computed {
+  activeFilterName: function () {
+    return this.filters[this.activeFilterIndex].displayName
+  },
+}
+{% endprism %}
+
+Now, we must update the template of our `<app-header>` component, adding two `<transition>` components for the different states that our header will live in
+
+{% prism markup %}
+<div class="flex items-center relative overflow-hidden app-header bb b--black-10">
+    <transition
+      mode="out-in"
+      name="headerTransition"
+      enter-active-class="animated fadeInUp"
+      leave-active-class="animated fadeOutDown">
+      <div v-if="!showingFilter" class="absolute top-0 left-0 right-0 bottom-0 w-100 flex items-center">
+       <!-- back button, instagram logo, next button -->
+     </div>
+    </transition>
+    <transition
+      mode="out-in"
+      name="filterTrans"
+      enter-active-class="animated fadeInUp"
+      leave-active-class="animated fadeOutDown">
+       <div v-if="showingFilter" class="pl3">
+          {{ activeFilter }}
+       </div>
+      </transition>
+  </div>
+{% endprism %}
